@@ -98,8 +98,9 @@ public class MainView {
         contentArea.setBackground(new Background(new BackgroundFill(Theme.BG_BASE, CornerRadii.EMPTY, Insets.EMPTY)));
         borderPane.setCenter(contentArea);
 
-        // Show dashboard by default
-        showDashboard();
+        // Initialize dashboard content without premature network request before login
+        contentArea.setCenter(dashboardView.getRoot());
+        updateNavSelection("dashboard");
 
         return borderPane;
     }
@@ -420,7 +421,12 @@ public class MainView {
     }
 
     private void onLoginSuccess() {
-        currentUsername = loginView.getUsernameField().getText().trim();
+        String username = authService.getCurrentUsername();
+        String password = authService.getCurrentPassword();
+        if (username != null && password != null) {
+            apiClient.setCredentials(username, password);
+        }
+        currentUsername = (username != null && !username.isEmpty()) ? username : "Admin";
         setCurrentUser(currentUsername);
         sidebar.setVisible(true);
         sidebar.setManaged(true);

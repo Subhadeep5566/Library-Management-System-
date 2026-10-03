@@ -97,6 +97,14 @@ public class AuthService {
         return currentUsername != null && currentPassword != null;
     }
 
+    public String getCurrentUsername() {
+        return currentUsername;
+    }
+
+    public String getCurrentPassword() {
+        return currentPassword;
+    }
+
     public static class AuthResult {
         private final boolean success;
         private final String message;

@@ -46,7 +46,6 @@ public class BooksView {
         this.apiClient = apiClient;
         this.loadingOverlay = new LoadingOverlay();
         this.root = createLayout();
-        loadData();
     }
 
     private VBox createLayout() {
@@ -315,6 +314,7 @@ public class BooksView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Confirm Delete");
         confirm.setHeaderText("Delete Book");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -338,6 +338,7 @@ public class BooksView {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Operation Failed");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 

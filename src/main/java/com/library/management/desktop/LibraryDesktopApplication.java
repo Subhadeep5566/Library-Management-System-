@@ -62,8 +62,12 @@ public class LibraryDesktopApplication extends Application {
     }
 
     private void onLoginSuccess() {
-        String username = loginView.getUsernameField().getText().trim();
-        showMainApp(username.isEmpty() ? "Admin" : username);
+        String username = authService.getCurrentUsername();
+        String password = authService.getCurrentPassword();
+        if (username != null && password != null) {
+            apiClient.setCredentials(username, password);
+        }
+        showMainApp(username != null && !username.isEmpty() ? username : "Admin");
     }
 
     private void onLogout() {
