@@ -16,7 +16,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/fines")
+@RequestMapping("/fines")
 @RequiredArgsConstructor
 public class FineController {
 
@@ -80,5 +80,15 @@ public class FineController {
     public ResponseEntity<ApiResponse<Void>> generateFinesForOverdueBooks() {
         fineService.generateFinesForOverdueBooks();
         return ResponseEntity.ok(ApiResponse.success("Fines generated for overdue books"));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<PageResponse<FineResponse>>> searchFines(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        PageResponse<FineResponse> fines = fineService.searchFines(q, pageable);
+        return ResponseEntity.ok(ApiResponse.success(fines));
     }
 }

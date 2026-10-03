@@ -32,4 +32,9 @@ public interface FineRepository extends JpaRepository<Fine, Long> {
     Optional<Fine> findByBorrowId(@Param("borrow") Long borrowId);
 
     boolean existsByBorrowId(Long borrowId);
+
+    @Query("SELECT f FROM Fine f WHERE " +
+            "(f.user.username LIKE %:query% OR f.user.firstName LIKE %:query% OR f.user.lastName LIKE %:query% " +
+            "OR f.borrow.book.title LIKE %:query% OR f.reason LIKE %:query%)")
+    Page<Fine> searchFines(@Param("query") String query, Pageable pageable);
 }

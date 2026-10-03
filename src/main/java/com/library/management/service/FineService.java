@@ -26,4 +26,6 @@ public interface FineService {
     FineResponse waiveFine(Long fineId);
 
     void generateFinesForOverdueBooks();
+
+    PageResponse<FineResponse> searchFines(String query, Pageable pageable);
 }

@@ -141,4 +141,11 @@ public class FineServiceImpl implements FineService {
                 .empty(fines.isEmpty())
                 .build();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<FineResponse> searchFines(String query, Pageable pageable) {
+        Page<Fine> fines = fineRepository.searchFines(query, pageable);
+        return mapToPageResponse(fines);
+    }
 }

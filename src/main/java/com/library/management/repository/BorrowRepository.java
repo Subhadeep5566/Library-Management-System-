@@ -38,4 +38,9 @@ public interface BorrowRepository extends JpaRepository<Borrow, Long> {
     long countByUserIdAndStatus(Long userId, BorrowStatus status);
 
     boolean existsByUserIdAndBookIdAndStatus(Long userId, Long bookId, BorrowStatus status);
+
+    @Query("SELECT b FROM Borrow b WHERE " +
+            "(b.user.username LIKE %:query% OR b.user.firstName LIKE %:query% OR b.user.lastName LIKE %:query% " +
+            "OR b.book.title LIKE %:query% OR b.book.isbn LIKE %:query%)")
+    Page<Borrow> searchBorrows(@Param("query") String query, Pageable pageable);
 }

@@ -52,6 +52,7 @@ public class User {
     private UserStatus status = UserStatus.ACTIVE;
 
     @Column(name = "membership_date", nullable = false)
+    @Builder.Default
     private LocalDateTime membershipDate = LocalDateTime.now();
 
     @Column(name = "expiry_date")

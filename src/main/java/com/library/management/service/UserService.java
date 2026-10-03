@@ -10,6 +10,7 @@ import com.library.management.entity.UserRole;
 import com.library.management.entity.UserStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -45,4 +46,6 @@ public interface UserService {
     boolean existsByEmail(String email);
 
     List<UserResponse> getExpiredUsers();
+
+    UserDetails loadUserByUsername(String username);
 }

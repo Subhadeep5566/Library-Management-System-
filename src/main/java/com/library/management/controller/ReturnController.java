@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/returns")
+@RequestMapping("/returns")
 @RequiredArgsConstructor
 public class ReturnController {
 
@@ -49,6 +49,16 @@ public class ReturnController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<ApiResponse<List<ReturnResponse>>> getReturnsByUser(@PathVariable Long userId) {
         List<ReturnResponse> returns = returnService.getReturnsByUser(userId);
+        return ResponseEntity.ok(ApiResponse.success(returns));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<PageResponse<ReturnResponse>>> searchReturns(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        PageResponse<ReturnResponse> returns = returnService.searchReturns(q, pageable);
         return ResponseEntity.ok(ApiResponse.success(returns));
     }
 }

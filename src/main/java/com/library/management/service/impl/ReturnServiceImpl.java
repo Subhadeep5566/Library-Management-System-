@@ -131,4 +131,11 @@ public class ReturnServiceImpl implements ReturnService {
                 .empty(returns.isEmpty())
                 .build();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<ReturnResponse> searchReturns(String query, Pageable pageable) {
+        Page<Return> returns = returnRepository.searchReturns(query, pageable);
+        return mapToPageResponse(returns);
+    }
 }

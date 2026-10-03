@@ -225,6 +225,13 @@ public class BorrowServiceImpl implements BorrowService {
         return borrowRepository.existsByUserIdAndBookIdAndStatus(userId, bookId, BorrowStatus.BORROWED);
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PageResponse<BorrowResponse> searchBorrows(String query, Pageable pageable) {
+        Page<Borrow> borrows = borrowRepository.searchBorrows(query, pageable);
+        return mapToPageResponse(borrows);
+    }
+
     private BorrowResponse mapToResponse(Borrow borrow) {
         return BorrowResponse.builder()
                 .id(borrow.getId())

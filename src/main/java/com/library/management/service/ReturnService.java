@@ -19,4 +19,6 @@ public interface ReturnService {
     List<ReturnResponse> getReturnsByUser(Long userId);
 
     List<ReturnResponse> getReturnsByBook(Long bookId);
+
+    PageResponse<ReturnResponse> searchReturns(String query, Pageable pageable);
 }

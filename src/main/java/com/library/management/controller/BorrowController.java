@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/borrows")
+@RequestMapping("/borrows")
 @RequiredArgsConstructor
 public class BorrowController {
 
@@ -101,5 +101,15 @@ public class BorrowController {
             @PathVariable Long bookId) {
         boolean hasActive = borrowService.hasActiveBorrow(userId, bookId);
         return ResponseEntity.ok(ApiResponse.success(hasActive));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<ApiResponse<PageResponse<BorrowResponse>>> searchBorrows(
+            @RequestParam String q,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        PageResponse<BorrowResponse> borrows = borrowService.searchBorrows(q, pageable);
+        return ResponseEntity.ok(ApiResponse.success(borrows));
     }
 }

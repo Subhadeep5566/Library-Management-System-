@@ -32,4 +32,6 @@ public interface BorrowService {
     long countActiveBorrowsByUser(Long userId);
 
     boolean hasActiveBorrow(Long userId, Long bookId);
+
+    PageResponse<BorrowResponse> searchBorrows(String query, Pageable pageable);
 }
