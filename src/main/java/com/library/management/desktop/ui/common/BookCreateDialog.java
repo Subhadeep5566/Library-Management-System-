@@ -26,6 +26,13 @@ public class BookCreateDialog extends Dialog<Boolean> {
     private TextField isbnField;
     private Spinner<Integer> totalCopiesSpinner;
     private Spinner<Integer> availableCopiesSpinner;
+    private Spinner<Integer> publicationYearSpinner;
+    private TextField publisherField;
+    private TextField languageField;
+    private Spinner<Integer> pageCountSpinner;
+    private TextField priceField;
+    private TextField shelfLocationField;
+    private TextArea descriptionArea;
 
     private final ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
 
@@ -121,41 +128,41 @@ public class BookCreateDialog extends Dialog<Boolean> {
         grid.add(availableCopiesSpinner, 1, 5);
 
         // Publication Year
-        Spinner<Integer> publicationYearSpinner = new Spinner<>(1000, java.time.Year.now().getValue() + 1, java.time.Year.now().getValue());
+        publicationYearSpinner = new Spinner<>(1000, java.time.Year.now().getValue() + 1, java.time.Year.now().getValue());
         grid.add(new Label("Publication Year:"), 0, 6);
         grid.add(publicationYearSpinner, 1, 6);
 
         // Publisher
-        TextField publisherField = new TextField();
+        publisherField = new TextField();
         publisherField.setPromptText("Publisher name");
         grid.add(new Label("Publisher:"), 0, 7);
         grid.add(publisherField, 1, 7);
 
         // Language
-        TextField languageField = new TextField();
+        languageField = new TextField();
         languageField.setPromptText("e.g., English");
         grid.add(new Label("Language:"), 0, 8);
         grid.add(languageField, 1, 8);
 
         // Page Count
-        Spinner<Integer> pageCountSpinner = new Spinner<>(0, 10000, 0);
+        pageCountSpinner = new Spinner<>(0, 10000, 0);
         grid.add(new Label("Page Count:"), 0, 9);
         grid.add(pageCountSpinner, 1, 9);
 
         // Price
-        TextField priceField = new TextField();
+        priceField = new TextField();
         priceField.setPromptText("e.g., 29.99");
         grid.add(new Label("Price:"), 0, 10);
         grid.add(priceField, 1, 10);
 
         // Shelf Location
-        TextField shelfLocationField = new TextField();
+        shelfLocationField = new TextField();
         shelfLocationField.setPromptText("e.g., A-1-1");
         grid.add(new Label("Shelf Location:"), 0, 11);
         grid.add(shelfLocationField, 1, 11);
 
         // Description
-        TextArea descriptionArea = new TextArea();
+        descriptionArea = new TextArea();
         descriptionArea.setPromptText("Book description");
         descriptionArea.setPrefRowCount(3);
         descriptionArea.setWrapText(true);
@@ -211,6 +218,17 @@ public class BookCreateDialog extends Dialog<Boolean> {
         request.setCategoryId(categoryCombo.getValue().getId());
         request.setTotalCopies(totalCopiesSpinner.getValue());
         request.setAvailableCopies(availableCopiesSpinner.getValue());
+        request.setPublicationYear(publicationYearSpinner.getValue());
+        request.setPublisher(publisherField.getText().trim().isEmpty() ? null : publisherField.getText().trim());
+        request.setLanguage(languageField.getText().trim().isEmpty() ? null : languageField.getText().trim());
+        request.setPageCount(pageCountSpinner.getValue());
+        if (!priceField.getText().trim().isEmpty()) {
+            try {
+                request.setPrice(new BigDecimal(priceField.getText().trim()));
+            } catch (NumberFormatException ignored) {}
+        }
+        request.setShelfLocation(shelfLocationField.getText().trim().isEmpty() ? null : shelfLocationField.getText().trim());
+        request.setDescription(descriptionArea.getText().trim().isEmpty() ? null : descriptionArea.getText().trim());
 
         Button saveButton = (Button) getDialogPane().lookupButton(saveButtonType);
         saveButton.setDisable(true);

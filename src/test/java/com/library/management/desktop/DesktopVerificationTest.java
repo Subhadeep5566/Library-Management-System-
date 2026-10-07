@@ -176,5 +176,9 @@ public class DesktopVerificationTest {
         var fines = apiService.getFines(0, 10, "id", "asc").get(10, TimeUnit.SECONDS);
         assertNotNull(fines);
         assertNotNull(fines.getContent());
+
+        // Verify username retention
+        assertEquals("demo", apiClient.getUsername());
+        assertEquals("demo", apiService.getCurrentUsername());
     }
 }

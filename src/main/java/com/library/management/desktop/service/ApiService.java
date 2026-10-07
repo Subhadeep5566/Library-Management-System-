@@ -22,6 +22,10 @@ public class ApiService {
         this.apiClient = apiClient;
     }
 
+    public String getCurrentUsername() {
+        return apiClient.getUsername();
+    }
+
     // ==================== BOOKS ====================
 
     public CompletableFuture<PageResponse<BookResponse>> getBooks(int page, int size, String sortBy, String sortDir) {

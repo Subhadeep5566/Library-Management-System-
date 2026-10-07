@@ -183,6 +183,12 @@ public class BookEditDialog extends Dialog<Boolean> {
         apiService.getAuthors(0, 100, "name", "asc")
                 .thenAccept(page -> Platform.runLater(() -> {
                     authorCombo.getItems().setAll(page.getContent());
+                    if (book.getAuthorId() != null) {
+                        authorCombo.getItems().stream()
+                                .filter(a -> a.getId().equals(book.getAuthorId()))
+                                .findFirst()
+                                .ifPresent(authorCombo::setValue);
+                    }
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> showError("Failed to load authors: " + ex.getMessage()));
@@ -192,6 +198,12 @@ public class BookEditDialog extends Dialog<Boolean> {
         apiService.getCategories(0, 100, "name", "asc")
                 .thenAccept(page -> Platform.runLater(() -> {
                     categoryCombo.getItems().setAll(page.getContent());
+                    if (book.getCategoryId() != null) {
+                        categoryCombo.getItems().stream()
+                                .filter(c -> c.getId().equals(book.getCategoryId()))
+                                .findFirst()
+                                .ifPresent(categoryCombo::setValue);
+                    }
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> showError("Failed to load categories: " + ex.getMessage()));
@@ -202,33 +214,13 @@ public class BookEditDialog extends Dialog<Boolean> {
     private void populateFields() {
         titleField.setText(book.getTitle());
         isbnField.setText(book.getIsbn());
-
-        // Set author
-        apiService.getAuthors(0, 100, "name", "asc")
-                .thenAccept(page -> Platform.runLater(() -> {
-                    authorCombo.getItems().setAll(page.getContent());
-                    authorCombo.getItems().stream()
-                            .filter(a -> a.getId().equals(book.getAuthorId()))
-                            .findFirst()
-                            .ifPresent(authorCombo::setValue);
-                }));
-
-        // Set category
-        apiService.getCategories(0, 100, "name", "asc")
-                .thenAccept(page -> Platform.runLater(() -> {
-                    categoryCombo.getItems().setAll(page.getContent());
-                    categoryCombo.getItems().stream()
-                            .filter(c -> c.getId().equals(book.getCategoryId()))
-                            .findFirst()
-                            .ifPresent(categoryCombo::setValue);
-                }));
-
         totalCopiesSpinner.getValueFactory().setValue(book.getTotalCopies());
         availableCopiesSpinner.getValueFactory().setValue(book.getAvailableCopies());
         statusCombo.setValue(book.getStatus());
         publicationYearSpinner.getValueFactory().setValue(book.getPublicationYear() != null ? book.getPublicationYear() : java.time.Year.now().getValue());
         publisherField.setText(book.getPublisher());
         languageField.setText(book.getLanguage());
+        pageCountSpinner.getValueFactory().setValue(book.getPageCount() != null ? book.getPageCount() : 0);
         priceField.setText(book.getPrice() != null ? book.getPrice().toString() : "");
         shelfLocationField.setText(book.getShelfLocation());
         descriptionArea.setText(book.getDescription());

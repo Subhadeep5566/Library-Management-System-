@@ -15,6 +15,7 @@ public class CategoryCreateDialog extends Dialog<Boolean> {
     private final ApiService apiService;
     private TextField nameField;
     private TextArea descriptionArea;
+    private final ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
 
     public CategoryCreateDialog(ApiService apiService) {
         this.apiService = apiService;
@@ -24,7 +25,6 @@ public class CategoryCreateDialog extends Dialog<Boolean> {
         setResizable(true);
         getDialogPane().setPrefWidth(500);
 
-        ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
         getDialogPane().getButtonTypes().addAll(saveButtonType, ButtonType.CANCEL);
 
         createForm();
@@ -92,8 +92,6 @@ public class CategoryCreateDialog extends Dialog<Boolean> {
 
         return false;
     }
-
-    private ButtonType saveButtonType = new ButtonType("Save", ButtonBar.ButtonData.OK_DONE);
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);

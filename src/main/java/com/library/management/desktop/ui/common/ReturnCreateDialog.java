@@ -143,9 +143,17 @@ public class ReturnCreateDialog extends Dialog<Boolean> {
         // Load librarians and admins
         apiService.getUsers(0, 100, "username", "asc")
                 .thenAccept(page -> Platform.runLater(() -> {
-                    processedByCombo.getItems().setAll(page.getContent().stream()
+                    var staffList = page.getContent().stream()
                             .filter(u -> "ACTIVE".equals(u.getStatus()) && ("LIBRARIAN".equals(u.getRole()) || "ADMIN".equals(u.getRole())))
-                            .toList());
+                            .toList();
+                    processedByCombo.getItems().setAll(staffList);
+                    String current = apiService.getCurrentUsername();
+                    if (current != null) {
+                        staffList.stream()
+                                .filter(u -> current.equalsIgnoreCase(u.getUsername()))
+                                .findFirst()
+                                .ifPresent(processedByCombo::setValue);
+                    }
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> showError("Failed to load staff: " + ex.getMessage()));

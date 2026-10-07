@@ -49,6 +49,10 @@ public class ApiClient {
         return username != null && password != null;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     private String getAuthHeader() {
         if (username == null || password == null) {
             return null;

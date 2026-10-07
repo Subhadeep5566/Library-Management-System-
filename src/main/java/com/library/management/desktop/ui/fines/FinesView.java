@@ -94,8 +94,9 @@ public class FinesView {
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
             boolean hasSelection = newSel != null;
-            payButton.setDisable(!hasSelection);
-            waiveButton.setDisable(!hasSelection);
+            boolean canPayOrWaive = hasSelection && "PENDING".equals(newSel.getStatus());
+            payButton.setDisable(!canPayOrWaive);
+            waiveButton.setDisable(!canPayOrWaive);
         });
 
         setupTableColumns();

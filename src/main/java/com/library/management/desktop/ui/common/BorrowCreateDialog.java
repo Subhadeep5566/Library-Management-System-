@@ -110,11 +110,11 @@ public class BorrowCreateDialog extends Dialog<Boolean> {
     }
 
     private void loadReferenceData() {
-        // Load users (only ACTIVE members)
+        // Load users (any ACTIVE user)
         apiService.getUsers(0, 100, "username", "asc")
                 .thenAccept(page -> Platform.runLater(() -> {
                     userCombo.getItems().setAll(page.getContent().stream()
-                            .filter(u -> "ACTIVE".equals(u.getStatus()) && "MEMBER".equals(u.getRole()))
+                            .filter(u -> "ACTIVE".equals(u.getStatus()))
                             .toList());
                 }))
                 .exceptionally(ex -> {

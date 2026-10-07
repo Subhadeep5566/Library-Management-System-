@@ -11,6 +11,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Modality;
 
 import java.time.LocalDate;
+import java.util.concurrent.CompletableFuture;
 
 public class UserCreateDialog extends Dialog<Boolean> {
 
@@ -141,8 +142,8 @@ public class UserCreateDialog extends Dialog<Boolean> {
             showError("Password is required");
             return false;
         }
-        if (passwordField.getText().length() < 6) {
-            showError("Password must be at least 6 characters");
+        if (passwordField.getText().length() < 8) {
+            showError("Password must be at least 8 characters");
             return false;
         }
         if (roleCombo.getValue() == null) {
@@ -163,11 +164,24 @@ public class UserCreateDialog extends Dialog<Boolean> {
         request.setPhone(phoneField.getText().trim().isEmpty() ? null : phoneField.getText().trim());
         request.setAddress(addressArea.getText().trim().isEmpty() ? null : addressArea.getText().trim());
 
+        String selectedRole = roleCombo.getValue();
+        String selectedStatus = statusCombo.getValue();
+
         Button saveButton = (Button) getDialogPane().lookupButton(saveButtonType);
         saveButton.setDisable(true);
 
         apiService.createUser(request)
-                .thenAccept(response -> Platform.runLater(() -> {
+                .thenCompose(createdUser -> {
+                    CompletableFuture<Void> followUp = CompletableFuture.completedFuture(null);
+                    if (selectedRole != null && !"MEMBER".equals(selectedRole)) {
+                        followUp = followUp.thenCompose(v -> apiService.updateUserRole(createdUser.getId(), selectedRole).thenApply(r -> null));
+                    }
+                    if (selectedStatus != null && !"ACTIVE".equals(selectedStatus)) {
+                        followUp = followUp.thenCompose(v -> apiService.updateUserStatus(createdUser.getId(), selectedStatus).thenApply(r -> null));
+                    }
+                    return followUp;
+                })
+                .thenAccept(v -> Platform.runLater(() -> {
                     saveButton.setDisable(false);
                     setResult(true);
                     close();

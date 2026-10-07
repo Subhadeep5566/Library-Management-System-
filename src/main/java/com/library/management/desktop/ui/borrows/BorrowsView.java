@@ -94,8 +94,9 @@ public class BorrowsView {
         table.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         table.getSelectionModel().selectedItemProperty().addListener((obs, oldSel, newSel) -> {
             boolean hasSelection = newSel != null;
-            returnButton.setDisable(!hasSelection);
-            lostButton.setDisable(!hasSelection);
+            boolean canAction = hasSelection && ("BORROWED".equals(newSel.getStatus()) || "OVERDUE".equals(newSel.getStatus()));
+            returnButton.setDisable(!canAction);
+            lostButton.setDisable(!canAction);
         });
 
         setupTableColumns();

@@ -134,11 +134,11 @@ public class LoginView {
         passwordField.textProperty().bindBidirectional(plainPasswordField.textProperty());
 
         togglePasswordBtn.setFont(Font.font("System", 13));
-        togglePasswordBtn.setStyle("-fx-text-fill: #64748B; -fx-background-color: transparent; -fx-cursor: hand;");
+        togglePasswordBtn.setStyle("-fx-text-fill: #94A3B8; -fx-background-color: transparent; -fx-cursor: hand;");
         togglePasswordBtn.setPadding(new Insets(0, 12, 0, 0));
         togglePasswordBtn.setOnAction(e -> togglePasswordVisibility());
-        togglePasswordBtn.setOnMouseEntered(e -> togglePasswordBtn.setStyle("-fx-text-fill: #0F172A; -fx-background-color: transparent; -fx-cursor: hand;"));
-        togglePasswordBtn.setOnMouseExited(e -> togglePasswordBtn.setStyle("-fx-text-fill: #64748B; -fx-background-color: transparent; -fx-cursor: hand;"));
+        togglePasswordBtn.setOnMouseEntered(e -> togglePasswordBtn.setStyle("-fx-text-fill: #F8FAFC; -fx-background-color: transparent; -fx-cursor: hand;"));
+        togglePasswordBtn.setOnMouseExited(e -> togglePasswordBtn.setStyle("-fx-text-fill: #94A3B8; -fx-background-color: transparent; -fx-cursor: hand;"));
 
         StackPane passwordFieldContainer = new StackPane(passwordField, plainPasswordField, togglePasswordBtn);
         StackPane.setAlignment(togglePasswordBtn, Pos.CENTER_RIGHT);

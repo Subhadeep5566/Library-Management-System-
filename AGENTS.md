@@ -265,6 +265,14 @@ Key settings in `src/main/resources/application.properties`:
   - Smooth 140ms view transitions, gentle hover lighting, cursor hand affordances.
   - Animation timers properly stopped on view exit to preserve CPU and battery.
 - **Phase 19-24 (Verification & Quality)**:
-  - `mvn clean compile`: BUILD SUCCESS.
+  - `mvn clean compile`: BUILD SUCCESS (all 111 source files compiled cleanly).
+  - Fixed duplicate `saveButtonType` declaration in `CategoryCreateDialog.java`.
+  - Updated Lombok to 1.18.34 with proper Maven compiler annotationProcessorPaths resolution.
+  - Added role and status chained assignment in `UserCreateDialog.java` and enforced backend 8+ char password requirement.
+  - Added auto-population of `pageCountSpinner` and streamlined cached reference loading in `BookEditDialog.java`.
+  - Added auto-selection of logged-in staff patron in `ReturnCreateDialog.java`.
+  - Added condition guards to action buttons in `BorrowsView.java` (only active loans) and `FinesView.java` (only pending fines).
+  - Added `getUsername()` and `getCurrentUsername()` accessors in `ApiClient.java` and `ApiService.java`.
   - `mvn test -Dtest=UserServiceImplTest`: 8/8 passed.
   - `mvn test -Pintegration-test -Dtest=DesktopVerificationTest`: 4/4 passed (Theme engine, real auth success, auth rejection, API queries against real backend).
+  - JavaFX smoke launch verified via `mvn javafx:run`.
