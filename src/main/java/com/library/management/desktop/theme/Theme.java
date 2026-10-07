@@ -346,10 +346,10 @@ public final class Theme {
         SVGPath bookPath = new SVGPath();
         bookPath.setContent("M 2 4 C 6 2, 10 2, 12 5 C 14 2, 18 2, 22 4 L 22 19 C 18 17, 14 17, 12 20 C 10 17, 6 17, 2 19 Z M 12 5 L 12 20");
         bookPath.setFill(new LinearGradient(0, 0, 1, 1, true, CycleMethod.NO_CYCLE,
-            new Stop(0, Color.web("#8B5CF6")),
-            new Stop(1, Color.web("#6D28D9"))
+            new Stop(0, Color.web("#F3E5AB")),
+            new Stop(1, Color.web("#C5A059"))
         ));
-        bookPath.setStroke(Color.web("#7C3AED", 0.9));
+        bookPath.setStroke(Color.web("#E5C378", 0.9));
         bookPath.setStrokeWidth(0.85);
 
         double scale = size / 26.0;
@@ -369,180 +369,144 @@ public final class Theme {
             "-fx-background-color: #0B0813; " +
             "-fx-control-inner-background: #140F20; " +
             "-fx-control-inner-background-alt: #171125; " +
-            "-fx-focus-color: #7C3AED; " +
-            "-fx-faint-focus-color: rgba(124, 58, 237, 0.2); " +
-            "-fx-accent: #7C3AED; " +
-            "-fx-selection-bar: #4C1D95; " +
+            "-fx-focus-color: #C5A059; " +
+            "-fx-faint-focus-color: rgba(197, 160, 89, 0.2); " +
+            "-fx-accent: #C5A059; " +
+            "-fx-selection-bar: #381024; " +
             "-fx-text-base-color: #FAF7F2; " +
             "-fx-font-family: 'Segoe UI', 'Inter', 'System', sans-serif;"
         );
     }
 
     public static void styleLoginTextField(TextField field) {
-        field.setBackground(new Background(new BackgroundFill(Color.web("#140F22"), RADII_MEDIUM, Insets.EMPTY)));
-        field.setPadding(new Insets(0, 12, 0, 12));
-        field.setStyle(
-            "-fx-background-color: #140F22; " +
+        String baseStyle =
+            "-fx-background-color: rgba(20, 13, 28, 0.82); " +
             "-fx-text-fill: #FAF7F2; " +
-            "-fx-prompt-text-fill: #736787; " +
-            "-fx-highlight-fill: #7C3AED; " +
-            "-fx-highlight-text-fill: #FFFFFF; " +
-            "-fx-border-color: #2E2042; " +
+            "-fx-prompt-text-fill: #9E9385; " +
+            "-fx-highlight-fill: #C5A059; " +
+            "-fx-highlight-text-fill: #1A1024; " +
+            "-fx-border-color: rgba(197, 160, 89, 0.38); " +
             "-fx-border-radius: 8px; " +
             "-fx-background-radius: 8px; " +
             "-fx-border-width: 1px; " +
-            "-fx-font-size: 13px;"
-        );
+            "-fx-font-size: 13px;";
+        field.setStyle(baseStyle);
+
         field.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 field.setStyle(
-                    "-fx-background-color: #18122B; " +
+                    "-fx-background-color: rgba(28, 18, 38, 0.92); " +
                     "-fx-text-fill: #FAF7F2; " +
-                    "-fx-prompt-text-fill: #736787; " +
-                    "-fx-highlight-fill: #7C3AED; " +
-                    "-fx-highlight-text-fill: #FFFFFF; " +
-                    "-fx-border-color: #7C3AED; " +
+                    "-fx-prompt-text-fill: #9E9385; " +
+                    "-fx-highlight-fill: #C5A059; " +
+                    "-fx-highlight-text-fill: #1A1024; " +
+                    "-fx-border-color: #D4AF37; " +
                     "-fx-border-radius: 8px; " +
                     "-fx-background-radius: 8px; " +
                     "-fx-border-width: 1.5px; " +
                     "-fx-font-size: 13px;"
                 );
             } else {
-                field.setStyle(
-                    "-fx-background-color: #140F22; " +
-                    "-fx-text-fill: #FAF7F2; " +
-                    "-fx-prompt-text-fill: #736787; " +
-                    "-fx-highlight-fill: #7C3AED; " +
-                    "-fx-highlight-text-fill: #FFFFFF; " +
-                    "-fx-border-color: #2E2042; " +
-                    "-fx-border-radius: 8px; " +
-                    "-fx-background-radius: 8px; " +
-                    "-fx-border-width: 1px; " +
-                    "-fx-font-size: 13px;"
-                );
+                field.setStyle(baseStyle);
             }
         });
     }
 
     public static void styleLoginPasswordField(PasswordField field) {
-        field.setBackground(new Background(new BackgroundFill(Color.web("#140F22"), RADII_MEDIUM, Insets.EMPTY)));
-        field.setPadding(new Insets(0, 12, 0, 12));
-        field.setStyle(
-            "-fx-background-color: #140F22; " +
+        String baseStyle =
+            "-fx-background-color: rgba(20, 13, 28, 0.82); " +
             "-fx-text-fill: #FAF7F2; " +
-            "-fx-prompt-text-fill: #736787; " +
-            "-fx-highlight-fill: #7C3AED; " +
-            "-fx-highlight-text-fill: #FFFFFF; " +
-            "-fx-border-color: #2E2042; " +
+            "-fx-prompt-text-fill: #9E9385; " +
+            "-fx-highlight-fill: #C5A059; " +
+            "-fx-highlight-text-fill: #1A1024; " +
+            "-fx-border-color: rgba(197, 160, 89, 0.38); " +
             "-fx-border-radius: 8px; " +
             "-fx-background-radius: 8px; " +
             "-fx-border-width: 1px; " +
-            "-fx-font-size: 13px;"
-        );
+            "-fx-font-size: 13px;";
+        field.setStyle(baseStyle);
+
         field.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 field.setStyle(
-                    "-fx-background-color: #18122B; " +
+                    "-fx-background-color: rgba(28, 18, 38, 0.92); " +
                     "-fx-text-fill: #FAF7F2; " +
-                    "-fx-prompt-text-fill: #736787; " +
-                    "-fx-highlight-fill: #7C3AED; " +
-                    "-fx-highlight-text-fill: #FFFFFF; " +
-                    "-fx-border-color: #7C3AED; " +
+                    "-fx-prompt-text-fill: #9E9385; " +
+                    "-fx-highlight-fill: #C5A059; " +
+                    "-fx-highlight-text-fill: #1A1024; " +
+                    "-fx-border-color: #D4AF37; " +
                     "-fx-border-radius: 8px; " +
                     "-fx-background-radius: 8px; " +
                     "-fx-border-width: 1.5px; " +
                     "-fx-font-size: 13px;"
                 );
             } else {
-                field.setStyle(
-                    "-fx-background-color: #140F22; " +
-                    "-fx-text-fill: #FAF7F2; " +
-                    "-fx-prompt-text-fill: #736787; " +
-                    "-fx-highlight-fill: #7C3AED; " +
-                    "-fx-highlight-text-fill: #FFFFFF; " +
-                    "-fx-border-color: #2E2042; " +
-                    "-fx-border-radius: 8px; " +
-                    "-fx-background-radius: 8px; " +
-                    "-fx-border-width: 1px; " +
-                    "-fx-font-size: 13px;"
-                );
+                field.setStyle(baseStyle);
             }
         });
     }
 
     public static void styleLoginButton(Button btn) {
-        btn.setFont(Font.font("System", FontWeight.SEMI_BOLD, 13));
-        btn.setTextFill(Color.WHITE);
+        btn.setFont(Font.font("System", FontWeight.BOLD, 13));
+        btn.setTextFill(Color.web("#FFFDF8"));
         btn.setCursor(javafx.scene.Cursor.HAND);
-        btn.setStyle(
-            "-fx-background-color: linear-gradient(to right, #7C3AED, #6D28D9); " +
+
+        String normalStyle =
+            "-fx-background-color: linear-gradient(to right, #381024, #4A162F); " +
+            "-fx-text-fill: #FFFDF8; " +
+            "-fx-background-radius: 8px; " +
+            "-fx-border-color: rgba(212, 175, 55, 0.65); " +
+            "-fx-border-radius: 8px; " +
+            "-fx-border-width: 1.2px; " +
+            "-fx-font-size: 13px; " +
+            "-fx-font-weight: bold;";
+
+        String hoverStyle =
+            "-fx-background-color: linear-gradient(to right, #4D1832, #611F3E); " +
             "-fx-text-fill: #FFFFFF; " +
             "-fx-background-radius: 8px; " +
-            "-fx-border-color: rgba(196, 181, 253, 0.3); " +
+            "-fx-border-color: #F3E5AB; " +
             "-fx-border-radius: 8px; " +
-            "-fx-border-width: 1px; " +
+            "-fx-border-width: 1.2px; " +
             "-fx-font-size: 13px; " +
-            "-fx-font-weight: bold;"
-        );
-        DropShadow glow = new DropShadow();
-        glow.setColor(Color.web("#7C3AED", 0.35));
-        glow.setRadius(8);
-        btn.setEffect(glow);
+            "-fx-font-weight: bold;";
+
+        String pressedStyle =
+            "-fx-background-color: #270B19; " +
+            "-fx-text-fill: #E2D9CC; " +
+            "-fx-background-radius: 8px; " +
+            "-fx-border-color: #C5A059; " +
+            "-fx-border-radius: 8px; " +
+            "-fx-border-width: 1.2px; " +
+            "-fx-font-size: 13px; " +
+            "-fx-font-weight: bold;";
+
+        btn.setStyle(normalStyle);
+
+        DropShadow subtleElevation = new DropShadow();
+        subtleElevation.setColor(Color.color(0, 0, 0, 0.45));
+        subtleElevation.setRadius(8);
+        subtleElevation.setOffsetY(2);
+        btn.setEffect(subtleElevation);
 
         btn.setOnMouseEntered(e -> {
             if (!btn.isDisabled()) {
-                btn.setStyle(
-                    "-fx-background-color: linear-gradient(to right, #8B5CF6, #7C3AED); " +
-                    "-fx-text-fill: #FFFFFF; " +
-                    "-fx-background-radius: 8px; " +
-                    "-fx-border-color: rgba(221, 214, 254, 0.5); " +
-                    "-fx-border-radius: 8px; " +
-                    "-fx-border-width: 1px; " +
-                    "-fx-font-size: 13px; " +
-                    "-fx-font-weight: bold;"
-                );
+                btn.setStyle(hoverStyle);
             }
         });
         btn.setOnMouseExited(e -> {
             if (!btn.isDisabled()) {
-                btn.setStyle(
-                    "-fx-background-color: linear-gradient(to right, #7C3AED, #6D28D9); " +
-                    "-fx-text-fill: #FFFFFF; " +
-                    "-fx-background-radius: 8px; " +
-                    "-fx-border-color: rgba(196, 181, 253, 0.3); " +
-                    "-fx-border-radius: 8px; " +
-                    "-fx-border-width: 1px; " +
-                    "-fx-font-size: 13px; " +
-                    "-fx-font-weight: bold;"
-                );
+                btn.setStyle(normalStyle);
             }
         });
         btn.setOnMousePressed(e -> {
             if (!btn.isDisabled()) {
-                btn.setStyle(
-                    "-fx-background-color: linear-gradient(to right, #5B21B6, #4C1D95); " +
-                    "-fx-text-fill: #FFFFFF; " +
-                    "-fx-background-radius: 8px; " +
-                    "-fx-border-color: rgba(196, 181, 253, 0.4); " +
-                    "-fx-border-radius: 8px; " +
-                    "-fx-border-width: 1px; " +
-                    "-fx-font-size: 13px; " +
-                    "-fx-font-weight: bold;"
-                );
+                btn.setStyle(pressedStyle);
             }
         });
         btn.setOnMouseReleased(e -> {
             if (!btn.isDisabled()) {
-                btn.setStyle(
-                    "-fx-background-color: linear-gradient(to right, #8B5CF6, #7C3AED); " +
-                    "-fx-text-fill: #FFFFFF; " +
-                    "-fx-background-radius: 8px; " +
-                    "-fx-border-color: rgba(221, 214, 254, 0.5); " +
-                    "-fx-border-radius: 8px; " +
-                    "-fx-border-width: 1px; " +
-                    "-fx-font-size: 13px; " +
-                    "-fx-font-weight: bold;"
-                );
+                btn.setStyle(hoverStyle);
             }
         });
     }

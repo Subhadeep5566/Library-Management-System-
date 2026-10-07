@@ -276,3 +276,23 @@ Key settings in `src/main/resources/application.properties`:
   - `mvn test -Dtest=UserServiceImplTest`: 8/8 passed.
   - `mvn test -Pintegration-test -Dtest=DesktopVerificationTest`: 4/4 passed (Theme engine, real auth success, auth rejection, API queries against real backend).
   - JavaFX smoke launch verified via `mvn javafx:run`.
+
+## Phase 25: Cinematic Mahabharata Landscape Login Redesign (2026-10-07)
+- **Design Philosophy**: Full-window 16:9 cinematic landscape desktop login experience seamlessly blending epic Indian cultural heritage with scholarly digital library software.
+- **Visual Composition**:
+  - **Left Side**: Dominant Mahabharata Kurukshetra artwork featuring the ornate golden chariot, Lord Krishna as charioteer with white steeds, warrior Arjuna, and divine golden rays breaking through dramatic battlefield clouds.
+  - **Right Side**: Integrated translucent darkened login panel (`rgba(16, 10, 26, 0.58)`), muted gold border (`rgba(197, 160, 89, 0.22)`), and Georgia serif typography. Completely eliminated the old narrow centered card.
+  - **Atmospheric Gradient Overlay**: Seamless horizontal `LinearGradient` across the entire window (0% darkening on the chariot and horses, gently deepening to deep plum/charcoal negative space on the right for clean text readability).
+  - **Palette**: Deep plum/burgundy (`#381024`, `#4A162F`), muted gold (`#C5A059`, `#D4AF37`, `#F3E5AB`), warm archival parchment (`#FAF7F2`, `#D4C7B5`, `#E2D9CC`). Electric purple eliminated from login controls.
+- **Component Architecture**:
+  - `CinematicBackgroundPane`: Dedicated JavaFX `Pane` with cover-fit scaling (`preserveRatio(true)`), intelligent left-center focal point preservation, and bounds clipping.
+  - `LoginView.java`: Full-window layout with responsive `BorderPane`, right-aligned `VBox` inside transparent `ScrollPane`, password visibility toggle (`👁`), and clear error/success feedback banners.
+  - `Theme.java`: Updated `createLoginLogoMark(38)` with warm gold gradient, `styleLoginTextField` and `styleLoginPasswordField` with dark translucent background and gold focus states, and `styleLoginButton` with dark plum/burgundy base, muted gold borders, and hover lighting.
+  - `LibraryDesktopApplication.java`: Set 16:9 landscape bounds (1440x810 default, 1080x640 min, fully resizable).
+- **Authentication Integrity**:
+  - Real Spring Boot backend HTTP Basic authentication against MySQL (`localhost:9090/api`) preserved 100%. No fake bypasses or mock data.
+- **Verification Results**:
+  - Compilation: BUILD SUCCESS.
+  - Unit tests: 8/8 passed in `UserServiceImplTest`.
+  - Integration & Desktop tests: 5/5 passed in `DesktopVerificationTest` (including `testCinematicLoginView` testing responsive resizing across 1280x720, 1366x768, 1440x810, 1600x900, 1920x1080 and classpath image validity).
+  - Application Launch: `mvn javafx:run` launches cleanly and displays the cinematic landscape window.

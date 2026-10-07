@@ -181,4 +181,58 @@ public class DesktopVerificationTest {
         assertEquals("demo", apiClient.getUsername());
         assertEquals("demo", apiService.getCurrentUsername());
     }
+
+    @Test
+    @DisplayName("Verify Cinematic Mahabharata Login Screen Architecture and Resizing")
+    void testCinematicLoginView() throws Exception {
+        if (!javaFxStarted) return;
+
+        CountDownLatch latch = new CountDownLatch(1);
+        Throwable[] errorHolder = new Throwable[1];
+
+        Platform.runLater(() -> {
+            try {
+                AuthService authService = new AuthService();
+                com.library.management.desktop.ui.login.LoginView loginView =
+                    new com.library.management.desktop.ui.login.LoginView(authService, () -> {});
+
+                var root = loginView.getRoot();
+                assertNotNull(root, "LoginView root should not be null");
+                assertEquals(3, root.getChildren().size(), "Root should contain Background, Overlay, and Content");
+
+                assertNotNull(loginView.getUsernameField(), "Username field should exist");
+                assertNotNull(loginView.getPasswordField(), "Password field should exist");
+                assertNotNull(loginView.getLoginButton(), "Login button should exist");
+
+                // Test responsive resizing
+                double[][] resolutions = {
+                    {1280, 720},
+                    {1366, 768},
+                    {1440, 810},
+                    {1600, 900},
+                    {1920, 1080}
+                };
+
+                for (double[] res : resolutions) {
+                    root.resize(res[0], res[1]);
+                    root.layout();
+                    assertTrue(root.getWidth() > 0 && root.getHeight() > 0);
+                }
+
+                // Verify classpath image resource is present and valid
+                var is = getClass().getResourceAsStream("/images/login-background.jpg");
+                assertNotNull(is, "Classpath resource /images/login-background.jpg must exist");
+                is.close();
+            } catch (Throwable t) {
+                errorHolder[0] = t;
+            } finally {
+                latch.countDown();
+            }
+        });
+
+        assertTrue(latch.await(5, TimeUnit.SECONDS), "LoginView test timed out");
+        if (errorHolder[0] != null) {
+            fail("LoginView verification failed: " + errorHolder[0].getMessage(), errorHolder[0]);
+        }
+    }
 }
