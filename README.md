@@ -1,6 +1,6 @@
-# My Library - Library Management System
+# My Library
 
-A modern library management system and desktop application built with **Java 21**, **Spring Boot 3.2**, **Maven**, **MySQL**, and **JavaFX** for the desktop client.
+A modern library desktop application and REST API backend built with **Java 21**, **Spring Boot 3.2**, **Maven**, **MySQL**, and **JavaFX** for the desktop client.
 
 ## Technology Stack
 
@@ -97,7 +97,15 @@ mvn package
 mvn spring-boot:run
 ```
 
-The backend will start on `http://localhost:8080/api`
+The backend will start on `http://localhost:9090/api`
+
+### Demo Account (Academic Presentation)
+
+The application includes a pre-configured demonstration account stored with BCrypt password hashing in MySQL:
+
+- **Username**: `demo`
+- **Password**: `demo123`
+- **Role**: `ADMIN`
 
 ### JavaFX Desktop Application
 
@@ -108,9 +116,9 @@ mvn javafx:run
 
 This launches the native Windows desktop application with the login screen.
 
-### Run Both (Development)
+### Run Both (Full Demonstration)
 
-For full-stack development, run both in separate terminals:
+For demonstration, run both in separate terminals:
 
 ```bash
 # Terminal 1: Spring Boot Backend
@@ -122,8 +130,8 @@ mvn javafx:run
 
 ### API Documentation
 
-- Swagger UI: `http://localhost:8080/api/swagger-ui.html`
-- OpenAPI Spec: `http://localhost:8080/api/v3/api-docs`
+- Swagger UI: `http://localhost:9090/api/swagger-ui.html`
+- OpenAPI Spec: `http://localhost:9090/api/v3/api-docs`
 
 ### Health Check
 
@@ -264,35 +272,39 @@ The desktop application follows a clean separation between the JavaFX client and
 
 ```
 com.library.management.desktop
-├── LibraryDesktopApplication.java    # JavaFX entry point
+├── LibraryDesktopApplication.java    # JavaFX entry point (1280x800 centered)
 ├── theme/
-│   └── Theme.java                    # JavaFX dark plum/violet styling system
+│   └── Theme.java                    # Scholarly reading room design system (Java-only)
 ├── service/
-│   ├── ApiClient.java               # HTTP REST Client (Java HTTP)
+│   ├── ApiClient.java               # Non-blocking HTTP client (CompletableFuture)
 │   ├── ApiService.java              # Entity service operations
 │   └── AuthService.java             # HTTP Basic authentication
 ├── dto/                             # Desktop transfer objects
 └── ui/
-    ├── login/                       # Sign In screen ("My Library")
-    ├── main/                        # Shell layout, header & sidebar navigation
-    ├── dashboard/                   # Real-time operational metrics cards
-    ├── books/                       # Books management & tables
-    ├── authors/                     # Authors management
-    ├── categories/                  # Categories management
-    ├── users/                       # Users management
-    ├── borrows/                     # Borrow records & operations
-    ├── returns/                     # Return processing
-    ├── fines/                       # Fine records & payments
-    └── common/                      # Reusable dialogs, overlays & forms
+    ├── login/                       # Atmospheric Sign In ("My Library")
+    ├── main/                        # Shell layout, header & gold-accented sidebar
+    ├── dashboard/                   # Real-time metrics cards & quick action toolbar
+    ├── books/                       # Books catalog, search, status badges & table
+    ├── authors/                     # Authors catalog & biography management
+    ├── categories/                  # Categories taxonomy & genres
+    ├── users/                       # Patrons & library staff management
+    ├── borrows/                     # Active circulation & loan desk
+    ├── returns/                     # Return check-in & condition assessment
+    ├── fines/                       # Fine tracking, payments & waivers
+    └── common/                      # BookishBackground, dialogs, overlays & empty states
 ```
 
 ### Key Points
 - Branded as **My Library**
+- Aesthetic: **A modern digital library inside a scholarly reading room**
+- Palette: Deep plum (`#0A0710`), rich burgundy (`#260E1E`), warm leather, parchment (`#F4EBD9`), muted gold (`#C5A059`), subtle violet (`#7C3AED`)
+- Atmospheric `BookishBackground`: Faint Latin manuscript text watermarks, ambient burgundy glow, book spine silhouettes, and delicate fleurons
+- Non-blocking network requests using `CompletableFuture` dispatched safely to JavaFX thread via `Platform.runLater`
 - Spring Boot backend runs independently (REST API on port 9090)
 - JavaFX client communicates with backend via HTTP/REST with HTTP Basic Auth
-- 100% Java-only styling via `Theme.java` (dark plum/violet modern theme)
-- Real database-backed operations and live metrics (no mock/fake data)
-- Shared architecture within the same Maven project
+- 100% Java-only styling via `Theme.java` (no brittle external CSS files)
+- Real MySQL database-backed operations and live metrics (zero fake or mock data)
+- All 10 create/edit dialogs audited with validated workflows and immediate parent table updates
 
 ## Development
 

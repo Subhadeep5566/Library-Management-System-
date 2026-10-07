@@ -44,7 +44,6 @@ public class UsersView {
         this.apiClient = apiClient;
         this.loadingOverlay = new LoadingOverlay();
         this.root = createLayout();
-        loadData();
     }
 
     private VBox createLayout() {
@@ -166,7 +165,7 @@ public class UsersView {
 
         TableColumn<UserResponse, String> roleCol = new TableColumn<>("Role");
         roleCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getRole()));
-        roleCol.setMinWidth(120);
+        roleCol.setMinWidth(130);
         roleCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -175,15 +174,15 @@ public class UsersView {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(item);
-                    setStyle("-fx-text-fill: " + getRoleColor(item) + "; -fx-font-weight: bold;");
+                    setText(null);
+                    setGraphic(com.library.management.desktop.theme.Theme.createStatusBadge(item, item));
                 }
             }
         });
 
         TableColumn<UserResponse, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getStatus()));
-        statusCol.setMinWidth(120);
+        statusCol.setMinWidth(130);
         statusCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -192,8 +191,8 @@ public class UsersView {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(item);
-                    setStyle("-fx-text-fill: " + getStatusColor(item) + "; -fx-font-weight: bold;");
+                    setText(null);
+                    setGraphic(com.library.management.desktop.theme.Theme.createStatusBadge(item, item));
                 }
             }
         });
@@ -295,9 +294,10 @@ public class UsersView {
 
     private void updateEmptyState(boolean isEmpty) {
         if (isEmpty) {
-            Label emptyLabel = new Label(currentSearch.isEmpty() ? "No users found" : "No users match your search");
-            emptyLabel.getStyleClass().add("empty-state-label");
-            table.setPlaceholder(emptyLabel);
+            table.setPlaceholder(com.library.management.desktop.theme.Theme.createEmptyStateNode(
+                currentSearch.isEmpty() ? "No Patrons Registered" : "No Matching Patrons",
+                "Try searching by username or full name, or register a new library member."
+            ));
         } else {
             table.setPlaceholder(new Label("No data available"));
         }
@@ -306,7 +306,10 @@ public class UsersView {
     private void showAddDialog() {
         UserCreateDialog dialog = new UserCreateDialog(apiService);
         dialog.showAndWait().ifPresent(result -> {
-            if (result) loadData();
+            if (result) {
+                loadData();
+                showSuccess("Member registered successfully.");
+            }
         });
     }
 
@@ -315,7 +318,10 @@ public class UsersView {
         if (selected != null) {
             UserEditDialog dialog = new UserEditDialog(apiService, selected);
             dialog.showAndWait().ifPresent(result -> {
-                if (result) loadData();
+                if (result) {
+                    loadData();
+                    showSuccess("Member profile updated successfully.");
+                }
             });
         }
     }
@@ -329,6 +335,7 @@ public class UsersView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Confirm Delete");
         confirm.setHeaderText("Delete User");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -336,6 +343,7 @@ public class UsersView {
                         .thenRun(() -> Platform.runLater(() -> {
                             loadingOverlay.hide();
                             loadData();
+                            showSuccess("User account deleted successfully.");
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
@@ -348,10 +356,19 @@ public class UsersView {
         });
     }
 
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
+        alert.showAndWait();
+    }
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Operation Failed");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 

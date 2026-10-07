@@ -29,6 +29,12 @@ public class LibraryDesktopApplication extends Application {
         primaryStage.setHeight(800);
         primaryStage.setResizable(true);
 
+        primaryStage.setOnCloseRequest(e -> {
+            if (loginView != null) {
+                loginView.stopAnimation();
+            }
+        });
+
         initializeViews();
         showLoginScreen();
 
@@ -38,8 +44,8 @@ public class LibraryDesktopApplication extends Application {
 
     private void initializeViews() {
         loginView = new LoginView(authService, this::onLoginSuccess);
-        com.library.management.desktop.theme.Theme.applyRootTheme(loginView.getRoot());
-        loginScene = new Scene(loginView.getRoot(), 1280, 800);
+        com.library.management.desktop.theme.Theme.applyLoginTheme(loginView.getRoot());
+        loginScene = new Scene(loginView.getRoot(), 1280, 800, javafx.scene.paint.Color.web("#0A0710"));
 
         ApiService apiService = new ApiService(apiClient);
         mainView = new MainView(apiClient, apiService, authService, this::onLogout);
@@ -50,11 +56,13 @@ public class LibraryDesktopApplication extends Application {
     private void showLoginScreen() {
         loginView.getUsernameField().clear();
         loginView.getPasswordField().clear();
+        loginView.startAnimation();
         primaryStage.setScene(loginScene);
         primaryStage.setTitle("My Library");
     }
 
     private void showMainApp(String username) {
+        loginView.stopAnimation();
         mainView.setCurrentUser(username);
         mainView.navigateTo("dashboard");
         primaryStage.setScene(mainScene);

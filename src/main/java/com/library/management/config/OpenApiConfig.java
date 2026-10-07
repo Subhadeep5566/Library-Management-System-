@@ -15,9 +15,9 @@ public class OpenApiConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Library Management System API")
+                        .title("My Library API")
                         .version("1.0.0")
-                        .description("REST API for Library Management System"))
+                        .description("REST API for My Library"))
                 .addSecurityItem(new SecurityRequirement().addList("basicAuth"))
                 .components(new Components()
                         .addSecuritySchemes("basicAuth",

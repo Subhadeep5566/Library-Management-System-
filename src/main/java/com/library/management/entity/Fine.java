@@ -26,6 +26,7 @@ public class Fine {
     private BigDecimal amount;
 
     @Column(name = "fine_date", nullable = false)
+    @Builder.Default
     private LocalDate fineDate = LocalDate.now();
 
     @Column(name = "paid_date")
@@ -33,6 +34,7 @@ public class Fine {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private FineStatus status = FineStatus.PENDING;
 
     @Column(name = "days_overdue")

@@ -48,6 +48,12 @@ public class DesktopVerificationTest {
         assertNotNull(Theme.PURPLE_LIGHT, "PURPLE_LIGHT should be defined");
         assertNotNull(Theme.LAVENDER, "LAVENDER should be defined");
         assertNotNull(Theme.BORDER_SUBTLE, "BORDER_SUBTLE should be defined");
+        assertNotNull(Theme.BURGUNDY_DARK, "BURGUNDY_DARK should be defined");
+        assertNotNull(Theme.LEATHER, "LEATHER should be defined");
+        assertNotNull(Theme.PARCHMENT, "PARCHMENT should be defined");
+        assertNotNull(Theme.CREAM, "CREAM should be defined");
+        assertNotNull(Theme.GOLD_MUTED, "GOLD_MUTED should be defined");
+        assertNotNull(Theme.BORDER_GOLD, "BORDER_GOLD should be defined");
 
         if (javaFxStarted) {
             CountDownLatch latch = new CountDownLatch(1);
@@ -65,6 +71,10 @@ public class DesktopVerificationTest {
                     Theme.styleDangerButton(dangerBtn);
                     assertNotNull(dangerBtn.getBackground());
 
+                    Button goldBtn = new Button("Catalog");
+                    Theme.styleGoldButton(goldBtn);
+                    assertNotNull(goldBtn.getBackground());
+
                     TextField tf = new TextField();
                     Theme.styleTextField(tf);
                     assertNotNull(tf.getBackground());
@@ -75,6 +85,21 @@ public class DesktopVerificationTest {
 
                     javafx.scene.Node logo = Theme.createLogoMark(40);
                     assertNotNull(logo);
+
+                    javafx.scene.Node badge = Theme.createStatusBadge("AVAILABLE", "Available");
+                    assertNotNull(badge);
+
+                    javafx.scene.Node emptyState = Theme.createEmptyStateNode("No Books", "Try searching again");
+                    assertNotNull(emptyState);
+
+                    javafx.scene.Node separator = Theme.createOrnamentalSeparator();
+                    assertNotNull(separator);
+
+                    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(
+                        javafx.scene.control.Alert.AlertType.INFORMATION, "Test message", javafx.scene.control.ButtonType.OK
+                    );
+                    Theme.styleDialog(alert);
+                    assertNotNull(alert.getDialogPane().getBackground());
                 } finally {
                     latch.countDown();
                 }
@@ -87,12 +112,15 @@ public class DesktopVerificationTest {
     @DisplayName("Verify Real Backend Authentication (Valid Credentials)")
     void testRealAuthenticationSuccess() throws Exception {
         AuthService authService = new AuthService();
-        var future = authService.authenticate("testuser", "password123");
+        var future = authService.authenticate("demo", "demo123");
         var result = future.get(10, TimeUnit.SECONDS);
 
         assertNotNull(result, "AuthResult should not be null");
-        assertTrue(result.isSuccess(), "Authentication with valid testuser:password123 should succeed: " + result.getMessage());
-        assertEquals("Basic " + java.util.Base64.getEncoder().encodeToString("testuser:password123".getBytes()), authService.getAuthHeader());
+        assertTrue(result.isSuccess(), "Authentication with valid demo:demo123 should succeed: " + result.getMessage());
+        assertEquals("Basic " + java.util.Base64.getEncoder().encodeToString("demo:demo123".getBytes()), authService.getAuthHeader());
+        assertEquals("demo", authService.getCurrentUsername());
+        assertEquals("demo123", authService.getCurrentPassword());
+        assertTrue(authService.hasCredentials());
     }
 
     @Test
@@ -111,7 +139,7 @@ public class DesktopVerificationTest {
     @DisplayName("Verify ApiService Queries with Real Backend Dev Endpoints")
     void testApiServiceQueries() throws Exception {
         ApiClient apiClient = new ApiClient();
-        apiClient.setCredentials("testuser", "password123");
+        apiClient.setCredentials("demo", "demo123");
         ApiService apiService = new ApiService(apiClient);
 
         // Books

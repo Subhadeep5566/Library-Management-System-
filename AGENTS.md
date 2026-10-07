@@ -224,22 +224,47 @@ Key settings in `src/main/resources/application.properties`:
   - src/main/resources/application.properties (dev profile with H2)
 - **Remaining issues**: 13 Lombok @Builder initializer warnings (non-blocking)
 
-## Phase 3: "My Library" Desktop Visual Redesign & Verification (2026-10-02)
-- **Branding**: "My Library" (replaces all visible "Library Management System" branding)
-- **Design System**: JavaFX Java API based Theme (`Theme.java`)
-  - Deep plum / near-black palette: `#07050A`, `#0C0916`, `#120E1E`, `#18122B`, `#22183D`
-  - Violet/purple accents & ambient glow: `#7C3AED`, `#8B5CF6`, `#A78BFA`, `#C4B5FD`
-  - Crisp typography: `#F8FAFC` primary, `#94A3B8` secondary, `#64748B` muted
-  - Subdued borders: `#291E3F`, `#3B285E`
-- **Key Enhancements**:
-  - **Theme Helper**: `Theme.java` provides centralized color palette, custom SVG book logo mark, button stylers (Primary, Secondary, Danger, Pagination), field stylers (TextField, PasswordField, ComboBox), Card & TableView stylers, and recursive Dialog styler.
-  - **LoginView**: Deep plum/black radial ambient glow, SVG book icon, "My Library" header with "Your library, beautifully organized." subtitle, dark inputs with focused violet border, password visibility toggle (`👁`), violet primary login button with hover/press scale animation, loading spinner, and real backend authentication intact.
-  - **Main Navigation & Window**: Window titled "My Library" (1280x800, min 1000x680), dark plum sidebar with glowing active indicators, clean dark header with current page title, subtitle, user badge pill, and styled logout button.
-  - **Dashboard**: Real backend metrics cards with gradients and interactive hover-lift animations (Books, Authors, Categories, Users, Borrows, Pending, Overdue, Fines), live backend status indicator, and loading overlay.
-  - **Entity Views & Tables**: Books, Authors, Categories, Users, Borrows, Returns, Fines all styled with dark surfaces, violet hover/selection, pill badges, and pagination controls.
-  - **Dialogs**: All modal forms (Create/Edit Book, Author, Category, User, Borrow, Return, Detail) styled with dark surface, white labels, and violet action buttons.
-- **Verification**:
-  - `mvn clean compile`: BUILD SUCCESS (69 source files).
-  - `mvn test -Dtest=DesktopVerificationTest`: 4 tests passed (Theme engine, real auth 200 OK, auth 401 rejection, real API queries).
-  - `mvn test -Dtest=UserServiceImplTest`: 8 tests passed.
-  - `mvn javafx:run`: Launched and running stably as background daemon (`task-290`).
+## Phase 4-24: Autonomous Scholarly Reading Room Transformation & Verification (2026-10-07)
+- **Design Philosophy**: "A beautiful modern digital library inside a scholarly reading room"
+  - Enriched palette: Deep plum (`#0A0710`), rich burgundy (`#260E1E`), leather (`#3D1E16`), archival parchment (`#F4EBD9`), warm cream (`#FFFDF8`), charcoal (`#120B1C`), muted gold (`#C5A059`, `#D4AF37`), subtle violet (`#7C3AED`, `#8B5CF6`).
+- **Phase 0 & 1 (Health & Backend)**:
+  - Spring Boot 3.2.5 running on port 9090 with context path `/api`.
+  - Real MySQL 8.0 connection verified (`jdbc:mysql://localhost:3306/library_db`).
+  - Actuator `/api/actuator/health` reporting `UP` with live MySQL database check.
+  - All unit tests passing (8/8 in `UserServiceImplTest`).
+- **Phase 2 (Database Audit)**:
+  - Fixed reserved SQL keyword in `Return.java` (``@Column(name = "`condition`")``).
+  - Fixed Lombok `@Builder.Default` annotations across entities (`Book`, `Borrow`, `Fine`, `Return`, `User`) and DTOs (`ReturnCreateRequest`), eliminating field default overwrites and builder warnings.
+- **Phase 3 (Non-blocking Client)**:
+  - `ApiClient` uses asynchronous `java.net.http.HttpClient` with `CompletableFuture`.
+  - Zero UI thread freezing; all UI updates dispatched safely via `Platform.runLater()`.
+- **Phase 4 & 5 (Design System & Bookish Background)**:
+  - `BookishBackground.java`: Pure JavaFX canvas rendering deep plum/charcoal base, warm burgundy ambient reading-room glow, faint slanted Latin manuscript text ("EX LIBRIS • ET VERITAS...", 3.2% opacity), delicate book spine silhouettes, and subtle corner ornaments (`✦`, `❦`).
+  - `Theme.java`: Centralized scholarly design system with `createStatusBadge(...)`, `createOrnamentalSeparator()`, `createEmptyStateNode(...)`, `styleGoldButton(...)`, and complete dialog, table, card, button stylers.
+- **Phase 6 (Login Experience)**:
+  - Atmospheric login card with bookish background, Georgia serif typography, parchment subtitle, ornamental separator, dark inputs with focused violet/gold borders, password visibility toggle (`👁`), and real authentication against MySQL `demo:demo123`.
+- **Phase 7 (Application Shell)**:
+  - Sidebar with gold left-accent bookmark active indicators, ornamental fleurons, branded header, and clear section dividers.
+  - Header with user profile capsule, page title/subtitle, and styled sign out button.
+  - Central content wrapped in `StackPane` with `BookishBackground`.
+- **Phase 8 (Dashboard)**:
+  - Real MySQL statistics: Total Books, Authors, Categories, Members, Active Loans, Pending Returns, Overdue Books, Total Fines.
+  - Clickable stat cards that navigate directly to corresponding entity views.
+  - Quick Actions toolbar: "Loan / Borrow Book", "Catalog New Book", "Register Member", "Manage Fines".
+- **Phase 9-13 (Entity Views)**:
+  - `BooksView`, `AuthorsView`, `CategoriesView`, `UsersView`, `BorrowsView`, `ReturnsView`, `FinesView` upgraded with:
+    - `Theme.createStatusBadge(...)` for roles, loan statuses, condition ratings, payment statuses.
+    - `Theme.createEmptyStateNode(...)` for scholarly empty state illustrations.
+    - User feedback notifications (`showSuccess(...)`) on add, edit, delete, return, payment, and waive operations.
+- **Phase 14 (All Dialogs Audit & Fix)**:
+  - Audited and fixed all 10 dialogs (`BookCreateDialog`, `BookEditDialog`, `AuthorCreateDialog`, `AuthorEditDialog`, `CategoryCreateDialog`, `CategoryEditDialog`, `UserCreateDialog`, `UserEditDialog`, `BorrowCreateDialog`, `ReturnCreateDialog`) to ensure they set `setResult(true)` and `close()` on success so parent views immediately refresh.
+- **Phase 15 (UX States)**:
+  - Standardized Loading Overlay, Scholarly Empty States, Error Alert Handling, and Operation Success banners across all views.
+- **Phase 16-18 (Responsiveness, Animations & Performance)**:
+  - Window bounds: 1280x800 (min 1000x680, resizable).
+  - Smooth 140ms view transitions, gentle hover lighting, cursor hand affordances.
+  - Animation timers properly stopped on view exit to preserve CPU and battery.
+- **Phase 19-24 (Verification & Quality)**:
+  - `mvn clean compile`: BUILD SUCCESS.
+  - `mvn test -Dtest=UserServiceImplTest`: 8/8 passed.
+  - `mvn test -Pintegration-test -Dtest=DesktopVerificationTest`: 4/4 passed (Theme engine, real auth success, auth rejection, API queries against real backend).

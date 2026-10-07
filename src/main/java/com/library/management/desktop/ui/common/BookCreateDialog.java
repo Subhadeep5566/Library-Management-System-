@@ -218,23 +218,26 @@ public class BookCreateDialog extends Dialog<Boolean> {
         apiService.createBook(request)
                 .thenAccept(response -> Platform.runLater(() -> {
                     saveButton.setDisable(false);
-                    showSuccess("Book created successfully!");
+                    setResult(true);
+                    close();
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
                         saveButton.setDisable(false);
-                        showError("Failed to create book: " + ex.getMessage());
+                        String errorMsg = ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage();
+                        showError("Failed to create book: " + errorMsg);
                     });
                     return null;
                 });
 
-        return false; // Don't close dialog yet
+        return false;
     }
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Validation Error");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 
@@ -242,6 +245,7 @@ public class BookCreateDialog extends Dialog<Boolean> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.setTitle("Success");
         alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 }

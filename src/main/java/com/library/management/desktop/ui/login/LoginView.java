@@ -2,8 +2,8 @@ package com.library.management.desktop.ui.login;
 
 import com.library.management.desktop.service.AuthService;
 import com.library.management.desktop.theme.Theme;
+import com.library.management.desktop.ui.common.BookishBackground;
 import javafx.animation.FadeTransition;
-import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -12,14 +12,18 @@ import javafx.scene.control.*;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
 
 public class LoginView {
 
-    private final StackPane root;
+    private final StackPane rootContainer;
+    private final BookishBackground bookishBackground;
+    private final ScrollPane rootScrollPane;
+    private final StackPane centerWrapper;
+    private final VBox formContainer;
+
     private final TextField usernameField;
     private final PasswordField passwordField;
     private final TextField plainPasswordField;
@@ -30,7 +34,6 @@ public class LoginView {
     private final Label titleLabel;
     private final Label subtitleLabel;
     private final Node logoNode;
-    private final VBox cardBox;
 
     private final AuthService authService;
     private final Runnable onLoginSuccess;
@@ -48,122 +51,118 @@ public class LoginView {
         this.messageLabel = new Label();
         this.progressIndicator = new ProgressIndicator();
         this.titleLabel = new Label("My Library");
-        this.subtitleLabel = new Label("Your library, beautifully organized.");
-        this.logoNode = Theme.createLogoMark(56);
-        this.cardBox = new VBox(22);
+        this.subtitleLabel = new Label("Where stories and knowledge reside.");
+        this.logoNode = Theme.createLogoMark(42);
+        this.formContainer = new VBox(16);
+        this.centerWrapper = new StackPane();
+        this.bookishBackground = new BookishBackground();
 
-        this.root = createLoginLayout();
+        this.rootScrollPane = createLoginLayout();
+
+        this.rootContainer = new StackPane();
+        this.rootContainer.getChildren().addAll(bookishBackground, rootScrollPane);
+
         animateEntrance();
     }
 
-    private StackPane createLoginLayout() {
-        StackPane outerPane = new StackPane();
-        outerPane.setBackground(new Background(new BackgroundFill(Theme.BG_GRADIENT, CornerRadii.EMPTY, Insets.EMPTY)));
+    private ScrollPane createLoginLayout() {
+        // Form Container: Elegant Scholarly Card
+        formContainer.setAlignment(Pos.CENTER);
+        formContainer.setMaxWidth(360);
+        formContainer.setMinWidth(320);
+        formContainer.setPadding(new Insets(36, 28, 36, 28));
+        formContainer.setBackground(new Background(new BackgroundFill(Color.web("#140E22", 0.92), new CornerRadii(12), Insets.EMPTY)));
+        formContainer.setBorder(new Border(new BorderStroke(
+            Color.web("#36254F"), BorderStrokeStyle.SOLID, new CornerRadii(12), new BorderWidths(1.2)
+        )));
+        DropShadow cardShadow = new DropShadow();
+        cardShadow.setColor(Color.color(0, 0, 0, 0.55));
+        cardShadow.setRadius(24);
+        cardShadow.setOffsetY(10);
+        formContainer.setEffect(cardShadow);
 
-        // Ambient radial glow behind the card
-        Circle ambientGlow = new Circle(260);
-        ambientGlow.setFill(Theme.LOGIN_RADIAL_GLOW);
-        DropShadow glowSpread = new DropShadow();
-        glowSpread.setColor(Color.web("#7C3AED", 0.35));
-        glowSpread.setRadius(80);
-        glowSpread.setSpread(0.2);
-        ambientGlow.setEffect(glowSpread);
-
-        // Login Card Surface
-        cardBox.setAlignment(Pos.CENTER);
-        cardBox.setPadding(new Insets(42, 40, 42, 40));
-        cardBox.setMaxWidth(420);
-        cardBox.setMinWidth(360);
-        Theme.styleCard(cardBox);
-
-        // Header Section (Logo, Title, Subtitle)
-        VBox headerBox = new VBox(10);
+        // 1. Header: Small Book Icon + Title + Subtitle
+        VBox headerBox = new VBox(8);
         headerBox.setAlignment(Pos.CENTER);
+        headerBox.setPadding(new Insets(0, 0, 8, 0));
 
-        titleLabel.setFont(Font.font("System", FontWeight.BOLD, 28));
-        titleLabel.setTextFill(Theme.TEXT_PRIMARY);
-        titleLabel.setAlignment(Pos.CENTER);
+        titleLabel.setFont(Font.font("Georgia", FontWeight.BOLD, 26));
+        titleLabel.setStyle("-fx-text-fill: #FAF7F2; -fx-font-size: 26px; -fx-font-weight: bold;");
 
-        subtitleLabel.setFont(Font.font("System", FontWeight.NORMAL, 14));
-        subtitleLabel.setTextFill(Theme.TEXT_SECONDARY);
-        subtitleLabel.setAlignment(Pos.CENTER);
+        subtitleLabel.setFont(Font.font("System", FontWeight.NORMAL, 12));
+        subtitleLabel.setStyle("-fx-text-fill: #CFC4B0; -fx-font-size: 12px;");
 
-        headerBox.getChildren().addAll(logoNode, titleLabel, subtitleLabel);
+        Node separator = Theme.createOrnamentalSeparator();
 
-        // Form Fields
-        VBox formBox = new VBox(16);
-        formBox.setAlignment(Pos.CENTER_LEFT);
+        headerBox.getChildren().addAll(logoNode, titleLabel, subtitleLabel, separator);
 
-        // Username
+        // 2. Username Field
         VBox usernameGroup = new VBox(6);
+        usernameGroup.setAlignment(Pos.CENTER_LEFT);
         Label userLabel = new Label("Username");
-        userLabel.setFont(Font.font("System", FontWeight.MEDIUM, 13));
-        userLabel.setTextFill(Theme.TEXT_SECONDARY);
+        userLabel.setFont(Font.font("System", FontWeight.SEMI_BOLD, 12));
+        userLabel.setStyle("-fx-text-fill: #E2D9CC; -fx-font-size: 12px; -fx-font-weight: 600;");
 
-        usernameField.setPromptText("Enter username");
-        usernameField.setPrefHeight(44);
-        usernameField.setFont(Font.font("System", 14));
-        Theme.styleTextField(usernameField);
+        usernameField.setPromptText("Enter username (e.g. demo)");
+        usernameField.setPrefHeight(40);
+        usernameField.setFont(Font.font("System", 13));
+        Theme.styleLoginTextField(usernameField);
         usernameField.setOnAction(e -> handleLogin());
         usernameGroup.getChildren().addAll(userLabel, usernameField);
 
-        // Password with visibility toggle
+        // 3. Password Field with Toggle
         VBox passwordGroup = new VBox(6);
+        passwordGroup.setAlignment(Pos.CENTER_LEFT);
         Label passLabel = new Label("Password");
-        passLabel.setFont(Font.font("System", FontWeight.MEDIUM, 13));
-        passLabel.setTextFill(Theme.TEXT_SECONDARY);
+        passLabel.setFont(Font.font("System", FontWeight.SEMI_BOLD, 12));
+        passLabel.setStyle("-fx-text-fill: #E2D9CC; -fx-font-size: 12px; -fx-font-weight: 600;");
 
         passwordField.setPromptText("Enter password");
-        passwordField.setPrefHeight(44);
-        passwordField.setFont(Font.font("System", 14));
-        Theme.stylePasswordField(passwordField);
+        passwordField.setPrefHeight(40);
+        passwordField.setFont(Font.font("System", 13));
+        Theme.styleLoginPasswordField(passwordField);
         passwordField.setOnAction(e -> handleLogin());
 
         plainPasswordField.setPromptText("Enter password");
-        plainPasswordField.setPrefHeight(44);
-        plainPasswordField.setFont(Font.font("System", 14));
-        Theme.styleTextField(plainPasswordField);
+        plainPasswordField.setPrefHeight(40);
+        plainPasswordField.setFont(Font.font("System", 13));
+        Theme.styleLoginTextField(plainPasswordField);
         plainPasswordField.setVisible(false);
         plainPasswordField.setManaged(false);
         plainPasswordField.setOnAction(e -> handleLogin());
 
-        // Sync text between password and plain password
         passwordField.textProperty().bindBidirectional(plainPasswordField.textProperty());
 
-        togglePasswordBtn.setFont(Font.font("System", 14));
-        togglePasswordBtn.setTextFill(Theme.TEXT_MUTED);
-        togglePasswordBtn.setCursor(javafx.scene.Cursor.HAND);
-        togglePasswordBtn.setBackground(Background.EMPTY);
-        togglePasswordBtn.setBorder(Border.EMPTY);
+        togglePasswordBtn.setFont(Font.font("System", 13));
+        togglePasswordBtn.setStyle("-fx-text-fill: #64748B; -fx-background-color: transparent; -fx-cursor: hand;");
         togglePasswordBtn.setPadding(new Insets(0, 12, 0, 0));
         togglePasswordBtn.setOnAction(e -> togglePasswordVisibility());
-        togglePasswordBtn.setOnMouseEntered(e -> togglePasswordBtn.setTextFill(Theme.TEXT_SECONDARY));
-        togglePasswordBtn.setOnMouseExited(e -> togglePasswordBtn.setTextFill(Theme.TEXT_MUTED));
+        togglePasswordBtn.setOnMouseEntered(e -> togglePasswordBtn.setStyle("-fx-text-fill: #0F172A; -fx-background-color: transparent; -fx-cursor: hand;"));
+        togglePasswordBtn.setOnMouseExited(e -> togglePasswordBtn.setStyle("-fx-text-fill: #64748B; -fx-background-color: transparent; -fx-cursor: hand;"));
 
-        StackPane passwordFieldContainer = new StackPane();
-        passwordFieldContainer.getChildren().addAll(passwordField, plainPasswordField, togglePasswordBtn);
+        StackPane passwordFieldContainer = new StackPane(passwordField, plainPasswordField, togglePasswordBtn);
         StackPane.setAlignment(togglePasswordBtn, Pos.CENTER_RIGHT);
 
         passwordGroup.getChildren().addAll(passLabel, passwordFieldContainer);
 
-        // Login Button
+        // 4. Primary Sign In Button
         loginButton.setText("Sign In");
-        loginButton.setPrefHeight(46);
+        loginButton.setPrefHeight(40);
         loginButton.setMaxWidth(Double.MAX_VALUE);
-        Theme.stylePrimaryButton(loginButton);
+        Theme.styleLoginButton(loginButton);
         loginButton.setOnAction(e -> handleLogin());
 
-        // Progress Indicator inside button container
         progressIndicator.setVisible(false);
         progressIndicator.setManaged(false);
-        progressIndicator.setPrefSize(22, 22);
+        progressIndicator.setPrefSize(18, 18);
         progressIndicator.setProgress(-1);
 
         StackPane buttonStack = new StackPane(loginButton, progressIndicator);
         StackPane.setAlignment(progressIndicator, Pos.CENTER);
+        buttonStack.setPadding(new Insets(6, 0, 0, 0));
 
-        // Status Message Banner
-        messageLabel.setFont(Font.font("System", 13));
+        // 5. Status Message Banner
+        messageLabel.setFont(Font.font("System", 12));
         messageLabel.setWrapText(true);
         messageLabel.setAlignment(Pos.CENTER);
         messageLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
@@ -171,15 +170,28 @@ public class LoginView {
         messageLabel.setManaged(false);
         messageLabel.setMaxWidth(340);
 
-        formBox.getChildren().addAll(usernameGroup, passwordGroup, buttonStack, messageLabel);
+        formContainer.getChildren().addAll(headerBox, usernameGroup, passwordGroup, buttonStack, messageLabel);
 
-        cardBox.getChildren().addAll(headerBox, formBox);
+        // Center Wrapper (transparent)
+        centerWrapper.setAlignment(Pos.CENTER);
+        centerWrapper.setBackground(Background.EMPTY);
+        centerWrapper.getChildren().add(formContainer);
 
-        outerPane.getChildren().addAll(ambientGlow, cardBox);
-        StackPane.setAlignment(cardBox, Pos.CENTER);
-        StackPane.setAlignment(ambientGlow, Pos.CENTER);
+        // Root ScrollPane with transparent styling so MotionBackground shows through
+        ScrollPane scrollPane = new ScrollPane(centerWrapper);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        scrollPane.setStyle(
+            "-fx-background: transparent; " +
+            "-fx-background-color: transparent; " +
+            "-fx-control-inner-background: transparent; " +
+            "-fx-background-insets: 0; " +
+            "-fx-padding: 0;"
+        );
 
-        return outerPane;
+        return scrollPane;
     }
 
     private void togglePasswordVisibility() {
@@ -204,26 +216,10 @@ public class LoginView {
     }
 
     private void animateEntrance() {
-        // Logo subtle breath animation
-        ScaleTransition logoScale = new ScaleTransition(Duration.millis(600), logoNode);
-        logoScale.setFromX(0.85);
-        logoScale.setFromY(0.85);
-        logoScale.setToX(1.0);
-        logoScale.setToY(1.0);
-
-        FadeTransition cardFade = new FadeTransition(Duration.millis(500), cardBox);
-        cardFade.setFromValue(0.0);
-        cardFade.setToValue(1.0);
-
-        ScaleTransition cardScale = new ScaleTransition(Duration.millis(500), cardBox);
-        cardScale.setFromX(0.96);
-        cardScale.setFromY(0.96);
-        cardScale.setToX(1.0);
-        cardScale.setToY(1.0);
-
-        cardFade.play();
-        cardScale.play();
-        logoScale.play();
+        FadeTransition formFade = new FadeTransition(Duration.millis(240), formContainer);
+        formFade.setFromValue(0.0);
+        formFade.setToValue(1.0);
+        formFade.play();
     }
 
     private void handleLogin() {
@@ -274,36 +270,36 @@ public class LoginView {
         messageLabel.setText(message);
 
         if ("error".equals(type)) {
-            messageLabel.setTextFill(Color.web("#FCA5A5"));
+            messageLabel.setTextFill(Color.web("#FECDD3"));
             messageLabel.setBackground(new Background(
-                new BackgroundFill(Color.web("#3A131C"), new CornerRadii(8), Insets.EMPTY)
+                new BackgroundFill(Color.web("#3D0C15"), Theme.RADII_MEDIUM, Insets.EMPTY)
             ));
             messageLabel.setBorder(new Border(
-                new BorderStroke(Color.web("#7F1D1D"), BorderStrokeStyle.SOLID, new CornerRadii(8), new BorderWidths(1))
+                new BorderStroke(Color.web("#E11D48"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
             ));
         } else if ("success".equals(type)) {
             messageLabel.setTextFill(Color.web("#A7F3D0"));
             messageLabel.setBackground(new Background(
-                new BackgroundFill(Color.web("#064E3B", 0.6), new CornerRadii(8), Insets.EMPTY)
+                new BackgroundFill(Color.web("#052E20"), Theme.RADII_MEDIUM, Insets.EMPTY)
             ));
             messageLabel.setBorder(new Border(
-                new BorderStroke(Color.web("#059669"), BorderStrokeStyle.SOLID, new CornerRadii(8), new BorderWidths(1))
+                new BorderStroke(Color.web("#059669"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
             ));
         } else {
-            messageLabel.setTextFill(Theme.TEXT_SECONDARY);
+            messageLabel.setTextFill(Color.web("#DDD6FE"));
             messageLabel.setBackground(new Background(
-                new BackgroundFill(Color.web("#1E1538"), new CornerRadii(8), Insets.EMPTY)
+                new BackgroundFill(Color.web("#231145"), Theme.RADII_MEDIUM, Insets.EMPTY)
             ));
             messageLabel.setBorder(new Border(
-                new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, new CornerRadii(8), new BorderWidths(1))
+                new BorderStroke(Color.web("#7C3AED"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
             ));
         }
 
-        messageLabel.setPadding(new Insets(10, 16, 10, 16));
+        messageLabel.setPadding(new Insets(8, 14, 8, 14));
         messageLabel.setVisible(true);
         messageLabel.setManaged(true);
 
-        FadeTransition ft = new FadeTransition(Duration.millis(200), messageLabel);
+        FadeTransition ft = new FadeTransition(Duration.millis(160), messageLabel);
         ft.setFromValue(0);
         ft.setToValue(1);
         ft.play();
@@ -311,7 +307,7 @@ public class LoginView {
 
     private void clearMessage() {
         if (!messageLabel.isVisible()) return;
-        FadeTransition ft = new FadeTransition(Duration.millis(150), messageLabel);
+        FadeTransition ft = new FadeTransition(Duration.millis(120), messageLabel);
         ft.setFromValue(1);
         ft.setToValue(0);
         ft.setOnFinished(e -> {
@@ -322,7 +318,17 @@ public class LoginView {
     }
 
     public StackPane getRoot() {
-        return root;
+        return rootContainer;
+    }
+
+    public void startAnimation() {
+        if (bookishBackground != null) {
+            bookishBackground.renderBackground();
+        }
+    }
+
+    public void stopAnimation() {
+        // No heavy background animation running
     }
 
     public TextField getUsernameField() {

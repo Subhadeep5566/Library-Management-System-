@@ -43,7 +43,6 @@ public class FinesView {
         this.apiClient = apiClient;
         this.loadingOverlay = new LoadingOverlay();
         this.root = createLayout();
-        loadData();
     }
 
     private VBox createLayout() {
@@ -190,7 +189,7 @@ public class FinesView {
 
         TableColumn<FineResponse, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getStatus()));
-        statusCol.setMinWidth(120);
+        statusCol.setMinWidth(130);
         statusCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -199,15 +198,8 @@ public class FinesView {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(item);
-                    String color = switch (item) {
-                        case "PAID" -> "#10B981";
-                        case "PENDING" -> "#F59E0B";
-                        case "WAIVED" -> "#A78BFA";
-                        case "OVERDUE" -> "#EF4444";
-                        default -> "#8B7FA3";
-                    };
-                    setStyle("-fx-text-fill: " + color + "; -fx-font-weight: bold;");
+                    setText(null);
+                    setGraphic(com.library.management.desktop.theme.Theme.createStatusBadge(item, item));
                 }
             }
         });
@@ -294,9 +286,10 @@ public class FinesView {
 
     private void updateEmptyState(boolean isEmpty) {
         if (isEmpty) {
-            Label emptyLabel = new Label(currentSearch.isEmpty() ? "No fines found" : "No fines match your search");
-            emptyLabel.getStyleClass().add("empty-state-label");
-            table.setPlaceholder(emptyLabel);
+            table.setPlaceholder(com.library.management.desktop.theme.Theme.createEmptyStateNode(
+                currentSearch.isEmpty() ? "No Fines Outstanding" : "No Matching Fines",
+                "Library overdue penalties and payment records will appear here."
+            ));
         } else {
             table.setPlaceholder(new Label("No data available"));
         }
@@ -308,6 +301,7 @@ public class FinesView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Generate Fines");
         confirm.setHeaderText("Generate Overdue Fines");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -337,6 +331,7 @@ public class FinesView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Confirm Payment");
         confirm.setHeaderText("Pay Fine");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -344,6 +339,7 @@ public class FinesView {
                         .thenRun(() -> Platform.runLater(() -> {
                             loadingOverlay.hide();
                             loadData();
+                            showSuccess("Fine marked as paid successfully.");
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
@@ -365,6 +361,7 @@ public class FinesView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Confirm Waive");
         confirm.setHeaderText("Waive Fine");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -372,6 +369,7 @@ public class FinesView {
                         .thenRun(() -> Platform.runLater(() -> {
                             loadingOverlay.hide();
                             loadData();
+                            showSuccess("Fine waived successfully.");
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
@@ -388,6 +386,7 @@ public class FinesView {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Operation Failed");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 
@@ -395,6 +394,7 @@ public class FinesView {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.setTitle("Success");
         alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 

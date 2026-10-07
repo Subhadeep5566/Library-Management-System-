@@ -78,12 +78,14 @@ public class CategoryCreateDialog extends Dialog<Boolean> {
         apiService.createCategory(request)
                 .thenAccept(response -> Platform.runLater(() -> {
                     saveButton.setDisable(false);
-                    showSuccess("Category created successfully!");
+                    setResult(true);
+                    close();
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
                         saveButton.setDisable(false);
-                        showError("Failed to create category: " + ex.getMessage());
+                        String errorMsg = ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage();
+                        showError("Failed to create category: " + errorMsg);
                     });
                     return null;
                 });
@@ -97,6 +99,7 @@ public class CategoryCreateDialog extends Dialog<Boolean> {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Validation Error");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 
@@ -104,6 +107,7 @@ public class CategoryCreateDialog extends Dialog<Boolean> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.setTitle("Success");
         alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 }

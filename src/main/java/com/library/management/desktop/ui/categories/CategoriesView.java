@@ -44,7 +44,6 @@ public class CategoriesView {
         this.apiClient = apiClient;
         this.loadingOverlay = new LoadingOverlay();
         this.root = createLayout();
-        loadData();
     }
 
     private VBox createLayout() {
@@ -242,9 +241,10 @@ public class CategoriesView {
 
     private void updateEmptyState(boolean isEmpty) {
         if (isEmpty) {
-            Label emptyLabel = new Label(currentSearch.isEmpty() ? "No categories found" : "No categories match your search");
-            emptyLabel.getStyleClass().add("empty-state-label");
-            table.setPlaceholder(emptyLabel);
+            table.setPlaceholder(com.library.management.desktop.theme.Theme.createEmptyStateNode(
+                currentSearch.isEmpty() ? "No Categories Found" : "No Matching Categories",
+                "Try searching with another keyword or add a new category to the catalog."
+            ));
         } else {
             table.setPlaceholder(new Label("No data available"));
         }
@@ -253,7 +253,10 @@ public class CategoriesView {
     private void showAddDialog() {
         CategoryCreateDialog dialog = new CategoryCreateDialog(apiService);
         dialog.showAndWait().ifPresent(result -> {
-            if (result) loadData();
+            if (result) {
+                loadData();
+                showSuccess("Category created successfully.");
+            }
         });
     }
 
@@ -262,7 +265,10 @@ public class CategoriesView {
         if (selected != null) {
             CategoryEditDialog dialog = new CategoryEditDialog(apiService, selected);
             dialog.showAndWait().ifPresent(result -> {
-                if (result) loadData();
+                if (result) {
+                    loadData();
+                    showSuccess("Category updated successfully.");
+                }
             });
         }
     }
@@ -276,6 +282,7 @@ public class CategoriesView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Confirm Delete");
         confirm.setHeaderText("Delete Category");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -283,6 +290,7 @@ public class CategoriesView {
                         .thenRun(() -> Platform.runLater(() -> {
                             loadingOverlay.hide();
                             loadData();
+                            showSuccess("Category deleted successfully.");
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
@@ -295,10 +303,19 @@ public class CategoriesView {
         });
     }
 
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
+        alert.showAndWait();
+    }
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Operation Failed");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 

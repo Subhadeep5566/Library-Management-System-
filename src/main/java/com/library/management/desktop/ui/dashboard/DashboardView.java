@@ -5,17 +5,14 @@ import com.library.management.desktop.service.AuthService;
 import com.library.management.desktop.theme.Theme;
 import com.library.management.desktop.ui.common.LoadingOverlay;
 import javafx.animation.FadeTransition;
-import javafx.animation.ScaleTransition;
 import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradient;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.util.Duration;
@@ -42,70 +39,73 @@ public class DashboardView {
     private final Label totalFinesLabel;
 
     private final LoadingOverlay loadingOverlay;
+    private final java.util.function.Consumer<String> navigationHandler;
 
     public DashboardView(AuthService authService, ApiService apiService, Runnable onLogout) {
+        this(authService, apiService, null, onLogout);
+    }
+
+    public DashboardView(AuthService authService, ApiService apiService, java.util.function.Consumer<String> navigationHandler, Runnable onLogout) {
         this.authService = authService;
         this.apiService = apiService;
+        this.navigationHandler = navigationHandler;
         this.onLogout = onLogout;
         this.loadingOverlay = new LoadingOverlay();
 
         this.welcomeLabel = new Label("Welcome back");
-        this.subtitleLabel = new Label("Here is the latest snapshot of your library operations.");
-        this.totalBooksLabel = createStatValueLabel("0");
-        this.totalAuthorsLabel = createStatValueLabel("0");
-        this.totalCategoriesLabel = createStatValueLabel("0");
-        this.totalUsersLabel = createStatValueLabel("0");
-        this.activeBorrowsLabel = createStatValueLabel("0");
-        this.pendingReturnsLabel = createStatValueLabel("0");
-        this.overdueBooksLabel = createStatValueLabel("0");
-        this.totalFinesLabel = createStatValueLabel("$0.00");
+        this.subtitleLabel = new Label("Overview of current library collection, loans, and patron activities.");
+        this.totalBooksLabel = createStatValueLabel("0", Theme.TEXT_PRIMARY);
+        this.totalAuthorsLabel = createStatValueLabel("0", Theme.TEXT_PRIMARY);
+        this.totalCategoriesLabel = createStatValueLabel("0", Theme.TEXT_PRIMARY);
+        this.totalUsersLabel = createStatValueLabel("0", Theme.TEXT_PRIMARY);
+        this.activeBorrowsLabel = createStatValueLabel("0", Theme.SUCCESS);
+        this.pendingReturnsLabel = createStatValueLabel("0", Theme.WARNING);
+        this.overdueBooksLabel = createStatValueLabel("0", Theme.ERROR);
+        this.totalFinesLabel = createStatValueLabel("$0.00", Theme.TEXT_PRIMARY);
 
         this.root = createDashboardLayout();
     }
 
     private VBox createDashboardLayout() {
-        VBox container = new VBox(24);
-        container.setPadding(new Insets(28, 32, 28, 32));
+        VBox container = new VBox(20);
+        container.setPadding(new Insets(24, 28, 24, 28));
         container.setBackground(new Background(new BackgroundFill(Theme.BG_BASE, CornerRadii.EMPTY, Insets.EMPTY)));
 
-        // --- Welcome Header Banner ---
-        HBox headerBanner = new HBox(16);
-        headerBanner.setAlignment(Pos.CENTER_LEFT);
-        headerBanner.setPadding(new Insets(16, 24, 16, 24));
-        headerBanner.setBackground(new Background(new BackgroundFill(Theme.CARD_GRADIENT, Theme.RADII_LARGE, Insets.EMPTY)));
-        headerBanner.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, Theme.RADII_LARGE, new BorderWidths(1))));
-        headerBanner.setEffect(new DropShadow(16, 0, 4, Color.color(0, 0, 0, 0.25)));
+        // --- Minimal Header Bar ---
+        HBox headerBar = new HBox(16);
+        headerBar.setAlignment(Pos.CENTER_LEFT);
+        headerBar.setPadding(new Insets(4, 0, 4, 0));
 
-        VBox welcomeTextBox = new VBox(4);
-        welcomeLabel.setFont(Font.font("System", FontWeight.BOLD, 22));
+        VBox welcomeBox = new VBox(2);
+        welcomeLabel.setFont(Font.font("System", FontWeight.BOLD, 19));
         welcomeLabel.setTextFill(Theme.TEXT_PRIMARY);
 
-        subtitleLabel.setFont(Font.font("System", FontWeight.NORMAL, 13));
-        subtitleLabel.setTextFill(Theme.TEXT_SECONDARY);
+        subtitleLabel.setFont(Font.font("System", FontWeight.NORMAL, 12));
+        subtitleLabel.setTextFill(Theme.TEXT_MUTED);
 
-        welcomeTextBox.getChildren().addAll(welcomeLabel, subtitleLabel);
+        welcomeBox.getChildren().addAll(welcomeLabel, subtitleLabel);
 
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Button refreshButton = new Button("↻  Refresh Data");
+        Button refreshButton = new Button("↻  Refresh");
+        refreshButton.setPrefHeight(32);
         Theme.styleSecondaryButton(refreshButton);
         refreshButton.setOnAction(e -> loadData());
 
-        headerBanner.getChildren().addAll(welcomeTextBox, spacer, refreshButton);
+        headerBar.getChildren().addAll(welcomeBox, spacer, refreshButton);
 
-        // --- Section Title: Overview ---
-        Label statsSectionTitle = new Label("METRICS OVERVIEW");
-        statsSectionTitle.setFont(Font.font("System", FontWeight.BOLD, 12));
-        statsSectionTitle.setTextFill(Theme.TEXT_MUTED);
-        statsSectionTitle.setPadding(new Insets(8, 0, 0, 4));
+        // --- Section Label ---
+        Label statsTitle = new Label("OVERVIEW");
+        statsTitle.setFont(Font.font("System", FontWeight.BOLD, 11));
+        statsTitle.setTextFill(Theme.TEXT_MUTED);
+        statsTitle.setPadding(new Insets(6, 0, 0, 0));
 
-        // --- Stats Grid ---
+        // --- Stats Grid (Responsive 4-column layout) ---
         GridPane statsGrid = new GridPane();
-        statsGrid.setHgap(18);
-        statsGrid.setVgap(18);
+        statsGrid.setHgap(14);
+        statsGrid.setVgap(14);
 
-        // Make all 4 columns expand equally
         for (int i = 0; i < 4; i++) {
             ColumnConstraints col = new ColumnConstraints();
             col.setPercentWidth(25.0);
@@ -113,50 +113,86 @@ public class DashboardView {
             statsGrid.getColumnConstraints().add(col);
         }
 
-        // Row 1: Core Catalog & Community
-        Node card1 = createStatCard("Total Books", totalBooksLabel, "📚", "Catalog collection", Theme.STAT_CARD_GRADIENT_1, Theme.PURPLE_LIGHT);
-        Node card2 = createStatCard("Total Authors", totalAuthorsLabel, "✍️", "Registered authors", Theme.STAT_CARD_GRADIENT_2, Theme.ACCENT_VIOLET);
-        Node card3 = createStatCard("Total Categories", totalCategoriesLabel, "📂", "Genres & classifications", Theme.STAT_CARD_GRADIENT_3, Theme.LAVENDER);
-        Node card4 = createStatCard("Total Users", totalUsersLabel, "👥", "Patrons & staff", Theme.STAT_CARD_GRADIENT_4, Theme.PURPLE_GLOW);
+        // Row 1: Catalog & Members
+        Node card1 = createStatTile("BOOKS", totalBooksLabel, "📚", "Catalog collection", "books");
+        Node card2 = createStatTile("AUTHORS", totalAuthorsLabel, "✍️", "Registered authors", "authors");
+        Node card3 = createStatTile("CATEGORIES", totalCategoriesLabel, "📂", "Genres & taxonomy", "categories");
+        Node card4 = createStatTile("MEMBERS", totalUsersLabel, "👥", "Patrons & staff", "users");
 
         statsGrid.add(card1, 0, 0);
         statsGrid.add(card2, 1, 0);
         statsGrid.add(card3, 2, 0);
         statsGrid.add(card4, 3, 0);
 
-        // Row 2: Circulation & Financials
-        Node card5 = createStatCard("Active Borrows", activeBorrowsLabel, "📖", "Currently with readers", Theme.STAT_CARD_GRADIENT_1, Theme.SUCCESS);
-        Node card6 = createStatCard("Pending Returns", pendingReturnsLabel, "📦", "Expected returns", Theme.STAT_CARD_GRADIENT_2, Theme.WARNING);
-        Node card7 = createStatCard("Overdue Books", overdueBooksLabel, "⚠️", "Needs immediate attention", Theme.STAT_CARD_GRADIENT_3, Theme.ERROR);
-        Node card8 = createStatCard("Total Fines", totalFinesLabel, "💰", "Accrued penalty balance", Theme.STAT_CARD_GRADIENT_4, Theme.INFO);
+        // Row 2: Circulation & Accounts
+        Node card5 = createStatTile("ACTIVE LOANS", activeBorrowsLabel, "📖", "Currently borrowed", "borrows");
+        Node card6 = createStatTile("PENDING RETURNS", pendingReturnsLabel, "📦", "Due for check-in", "returns");
+        Node card7 = createStatTile("OVERDUE", overdueBooksLabel, "⚠️", "Needs follow-up", "fines");
+        Node card8 = createStatTile("TOTAL FINES", totalFinesLabel, "💰", "Accrued penalties", "fines");
 
         statsGrid.add(card5, 0, 1);
         statsGrid.add(card6, 1, 1);
         statsGrid.add(card7, 2, 1);
         statsGrid.add(card8, 3, 1);
 
-        // --- Quick Highlights / Status Card ---
-        HBox statusCard = new HBox(20);
-        statusCard.setAlignment(Pos.CENTER_LEFT);
-        statusCard.setPadding(new Insets(16, 24, 16, 24));
-        statusCard.setBackground(new Background(new BackgroundFill(Theme.BG_CARD, Theme.RADII_MEDIUM, Insets.EMPTY)));
-        statusCard.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))));
+        // --- Quick Actions Bar ---
+        HBox quickActionsBox = new HBox(12);
+        quickActionsBox.setAlignment(Pos.CENTER_LEFT);
+        quickActionsBox.setPadding(new Insets(6, 0, 4, 0));
+
+        Label actionsLabel = new Label("QUICK ACTIONS");
+        actionsLabel.setFont(Font.font("System", FontWeight.BOLD, 11));
+        actionsLabel.setTextFill(Theme.TEXT_MUTED);
+
+        Button quickBorrowBtn = new Button("📖 Loan / Borrow Book");
+        Theme.stylePrimaryButton(quickBorrowBtn);
+        quickBorrowBtn.setOnAction(e -> {
+            if (navigationHandler != null) navigationHandler.accept("borrows");
+        });
+
+        Button quickAddBookBtn = new Button("📚 Catalog New Book");
+        Theme.styleGoldButton(quickAddBookBtn);
+        quickAddBookBtn.setOnAction(e -> {
+            if (navigationHandler != null) navigationHandler.accept("books");
+        });
+
+        Button quickAddUserBtn = new Button("👤 Register Member");
+        Theme.styleSecondaryButton(quickAddUserBtn);
+        quickAddUserBtn.setOnAction(e -> {
+            if (navigationHandler != null) navigationHandler.accept("users");
+        });
+
+        Button quickFinesBtn = new Button("💰 Manage Fines");
+        Theme.styleSecondaryButton(quickFinesBtn);
+        quickFinesBtn.setOnAction(e -> {
+            if (navigationHandler != null) navigationHandler.accept("fines");
+        });
+
+        quickActionsBox.getChildren().addAll(actionsLabel, quickBorrowBtn, quickAddBookBtn, quickAddUserBtn, quickFinesBtn);
+
+        // --- System Status Footer ---
+        HBox statusBox = new HBox(10);
+        statusBox.setAlignment(Pos.CENTER_LEFT);
+        statusBox.setPadding(new Insets(10, 14, 10, 14));
+        statusBox.setBackground(new Background(new BackgroundFill(Theme.BG_CARD, Theme.RADII_MEDIUM, Insets.EMPTY)));
+        statusBox.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))));
 
         Label liveDot = new Label("●");
-        liveDot.setFont(Font.font("System", 16));
+        liveDot.setFont(Font.font("System", 12));
         liveDot.setTextFill(Theme.SUCCESS);
 
-        Label statusText = new Label("Backend Services Active  •  Database Synchronized");
-        statusText.setFont(Font.font("System", FontWeight.MEDIUM, 13));
+        Label statusText = new Label("Backend connected  •  Database synchronized");
+        statusText.setFont(Font.font("System", FontWeight.NORMAL, 12));
         statusText.setTextFill(Theme.TEXT_MUTED);
 
-        statusCard.getChildren().addAll(liveDot, statusText);
+        statusBox.getChildren().addAll(liveDot, statusText);
 
-        container.getChildren().addAll(headerBanner, statsSectionTitle, statsGrid, statusCard);
+        container.getChildren().addAll(headerBar, statsTitle, statsGrid, quickActionsBox, statusBox);
 
+        // Responsive ScrollPane wrapper
         ScrollPane scrollPane = new ScrollPane(container);
         scrollPane.setFitToWidth(true);
-        scrollPane.setStyle("-fx-background: transparent; -fx-background-color: transparent;");
+        Theme.styleScrollPane(scrollPane);
 
         StackPane wrapper = new StackPane(scrollPane, loadingOverlay);
         StackPane.setAlignment(loadingOverlay, Pos.CENTER);
@@ -169,67 +205,55 @@ public class DashboardView {
         return finalRoot;
     }
 
-    private Label createStatValueLabel(String text) {
+    private Label createStatValueLabel(String text, Color textColor) {
         Label label = new Label(text);
-        label.setFont(Font.font("System", FontWeight.BOLD, 26));
-        label.setTextFill(Theme.TEXT_PRIMARY);
+        label.setFont(Font.font("System", FontWeight.BOLD, 24));
+        label.setTextFill(textColor);
         return label;
     }
 
-    private Node createStatCard(String title, Label valueLabel, String icon, String subtitle, LinearGradient gradient, Color accentColor) {
-        VBox card = new VBox(10);
-        card.setPadding(new Insets(18, 20, 18, 20));
-        card.setBackground(new Background(new BackgroundFill(gradient, Theme.RADII_MEDIUM, Insets.EMPTY)));
-        card.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))));
+    private Node createStatTile(String title, Label valueLabel, String icon, String subtitle, String targetView) {
+        VBox tile = new VBox(6);
+        tile.setPadding(new Insets(14, 16, 14, 16));
+        tile.setBackground(new Background(new BackgroundFill(Theme.BG_CARD, Theme.RADII_MEDIUM, Insets.EMPTY)));
+        tile.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))));
+        tile.setCursor(javafx.scene.Cursor.HAND);
 
-        DropShadow cardShadow = new DropShadow();
-        cardShadow.setColor(Color.color(0, 0, 0, 0.25));
-        cardShadow.setRadius(14);
-        cardShadow.setOffsetY(3);
-        card.setEffect(cardShadow);
-
-        // Header inside card: Icon and Title
-        HBox topRow = new HBox(10);
-        topRow.setAlignment(Pos.CENTER_LEFT);
+        // Category Header (clean typography, no giant cards)
+        HBox headerRow = new HBox(8);
+        headerRow.setAlignment(Pos.CENTER_LEFT);
 
         Label iconLabel = new Label(icon);
-        iconLabel.setStyle("-fx-font-size: 20px;");
+        iconLabel.setFont(Font.font("System", 13));
 
         Label titleLabel = new Label(title);
-        titleLabel.setFont(Font.font("System", FontWeight.MEDIUM, 13));
-        titleLabel.setTextFill(Theme.TEXT_SECONDARY);
+        titleLabel.setFont(Font.font("System", FontWeight.BOLD, 11));
+        titleLabel.setTextFill(Theme.TEXT_MUTED);
 
-        topRow.getChildren().addAll(iconLabel, titleLabel);
+        headerRow.getChildren().addAll(iconLabel, titleLabel);
 
-        // Subtitle note
         Label descLabel = new Label(subtitle);
         descLabel.setFont(Font.font("System", FontWeight.NORMAL, 11));
         descLabel.setTextFill(Theme.TEXT_MUTED);
 
-        card.getChildren().addAll(topRow, valueLabel, descLabel);
+        tile.getChildren().addAll(headerRow, valueLabel, descLabel);
 
-        // Subtle interactive hover effect
-        card.setOnMouseEntered(e -> {
-            card.setBorder(new Border(new BorderStroke(accentColor, BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))));
-            cardShadow.setColor(Color.color(0.48, 0.22, 0.93, 0.35));
-            cardShadow.setRadius(18);
-            ScaleTransition st = new ScaleTransition(Duration.millis(120), card);
-            st.setToX(1.02);
-            st.setToY(1.02);
-            st.play();
+        // Minimal hover feedback
+        tile.setOnMouseEntered(e -> {
+            tile.setBackground(new Background(new BackgroundFill(Theme.BG_CARD_HOVER, Theme.RADII_MEDIUM, Insets.EMPTY)));
+            tile.setBorder(new Border(new BorderStroke(Theme.BORDER_MUTED, BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))));
         });
 
-        card.setOnMouseExited(e -> {
-            card.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))));
-            cardShadow.setColor(Color.color(0, 0, 0, 0.25));
-            cardShadow.setRadius(14);
-            ScaleTransition st = new ScaleTransition(Duration.millis(120), card);
-            st.setToX(1.0);
-            st.setToY(1.0);
-            st.play();
+        tile.setOnMouseExited(e -> {
+            tile.setBackground(new Background(new BackgroundFill(Theme.BG_CARD, Theme.RADII_MEDIUM, Insets.EMPTY)));
+            tile.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))));
         });
 
-        return card;
+        if (targetView != null && navigationHandler != null) {
+            tile.setOnMouseClicked(e -> navigationHandler.accept(targetView));
+        }
+
+        return tile;
     }
 
     public void setUsername(String username) {
@@ -320,7 +344,7 @@ public class DashboardView {
     }
 
     private void animateEntrance() {
-        FadeTransition ft = new FadeTransition(Duration.millis(350), root);
+        FadeTransition ft = new FadeTransition(Duration.millis(200), root);
         ft.setFromValue(0.0);
         ft.setToValue(1.0);
         ft.play();

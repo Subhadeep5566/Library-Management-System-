@@ -69,7 +69,7 @@ public class MainView {
         this.onLogoutCallback = onLogoutCallback;
 
         this.loginView = new LoginView(authService, this::onLoginSuccess);
-        this.dashboardView = new DashboardView(authService, apiService, this::handleLogout);
+        this.dashboardView = new DashboardView(authService, apiService, this::navigateTo, this::handleLogout);
         this.booksView = new BooksView(apiService, apiClient);
         this.authorsView = new AuthorsView(apiService, apiClient);
         this.categoriesView = new CategoriesView(apiService, apiClient);
@@ -95,8 +95,11 @@ public class MainView {
 
         // Content area
         contentArea = new BorderPane();
-        contentArea.setBackground(new Background(new BackgroundFill(Theme.BG_BASE, CornerRadii.EMPTY, Insets.EMPTY)));
-        borderPane.setCenter(contentArea);
+        contentArea.setBackground(new Background(new BackgroundFill(Color.TRANSPARENT, CornerRadii.EMPTY, Insets.EMPTY)));
+
+        com.library.management.desktop.ui.common.BookishBackground bookishBg = new com.library.management.desktop.ui.common.BookishBackground();
+        StackPane centerWrapper = new StackPane(bookishBg, contentArea);
+        borderPane.setCenter(centerWrapper);
 
         // Initialize dashboard content without premature network request before login
         contentArea.setCenter(dashboardView.getRoot());
@@ -106,10 +109,10 @@ public class MainView {
     }
 
     private HBox createHeader() {
-        HBox header = new HBox(20);
+        HBox header = new HBox(16);
         header.setAlignment(Pos.CENTER_LEFT);
-        header.setPrefHeight(68);
-        header.setPadding(new Insets(0, 28, 0, 28));
+        header.setPrefHeight(56);
+        header.setPadding(new Insets(0, 24, 0, 24));
         header.setBackground(new Background(new BackgroundFill(Theme.BG_DEEPEST, CornerRadii.EMPTY, Insets.EMPTY)));
         header.setBorder(new Border(new BorderStroke(
             null, null, Theme.BORDER_SUBTLE, null,
@@ -122,7 +125,7 @@ public class MainView {
         titleBox.setAlignment(Pos.CENTER_LEFT);
 
         headerTitle = new Label("Dashboard");
-        headerTitle.setFont(Font.font("System", FontWeight.BOLD, 19));
+        headerTitle.setFont(Font.font("System", FontWeight.BOLD, 17));
         headerTitle.setTextFill(Theme.TEXT_PRIMARY);
 
         headerSubtitle = new Label("Real-time metrics & library operations overview");
@@ -135,24 +138,25 @@ public class MainView {
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
         // Right: User Capsule
-        HBox userCapsule = new HBox(8);
+        HBox userCapsule = new HBox(6);
         userCapsule.setAlignment(Pos.CENTER);
-        userCapsule.setPadding(new Insets(6, 14, 6, 12));
-        userCapsule.setBackground(new Background(new BackgroundFill(Theme.BG_CARD, new CornerRadii(18), Insets.EMPTY)));
-        userCapsule.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, new CornerRadii(18), new BorderWidths(1))));
+        userCapsule.setPadding(new Insets(4, 12, 4, 10));
+        userCapsule.setBackground(new Background(new BackgroundFill(Theme.BG_CARD, new CornerRadii(14), Insets.EMPTY)));
+        userCapsule.setBorder(new Border(new BorderStroke(Theme.BORDER_SUBTLE, BorderStrokeStyle.SOLID, new CornerRadii(14), new BorderWidths(1))));
 
         Label userIcon = new Label("👤");
-        userIcon.setFont(Font.font("System", 13));
+        userIcon.setFont(Font.font("System", 12));
 
         userLabel = new Label(currentUsername);
-        userLabel.setFont(Font.font("System", FontWeight.SEMI_BOLD, 13));
+        userLabel.setFont(Font.font("System", FontWeight.MEDIUM, 12));
         userLabel.setTextFill(Theme.TEXT_SECONDARY);
 
         userCapsule.getChildren().addAll(userIcon, userLabel);
 
         // Logout Button
         logoutButton = new Button("Sign Out");
-        logoutButton.setFont(Font.font("System", FontWeight.MEDIUM, 13));
+        logoutButton.setFont(Font.font("System", FontWeight.MEDIUM, 12));
+        logoutButton.setPrefHeight(32);
         Theme.styleSecondaryButton(logoutButton);
         logoutButton.setOnAction(e -> handleLogout());
 
@@ -161,11 +165,11 @@ public class MainView {
     }
 
     private VBox createSidebar() {
-        VBox sidebarBox = new VBox(6);
-        sidebarBox.setPrefWidth(230);
-        sidebarBox.setMinWidth(230);
-        sidebarBox.setMaxWidth(230);
-        sidebarBox.setPadding(new Insets(20, 12, 20, 12));
+        VBox sidebarBox = new VBox(4);
+        sidebarBox.setPrefWidth(216);
+        sidebarBox.setMinWidth(216);
+        sidebarBox.setMaxWidth(216);
+        sidebarBox.setPadding(new Insets(16, 10, 16, 10));
         sidebarBox.setBackground(new Background(new BackgroundFill(Theme.SIDEBAR_GRADIENT, CornerRadii.EMPTY, Insets.EMPTY)));
         sidebarBox.setBorder(new Border(new BorderStroke(
             null, Theme.BORDER_SUBTLE, null, null,
@@ -174,24 +178,25 @@ public class MainView {
         )));
 
         // Top Brand Header: Logo + "My Library"
-        HBox brandBox = new HBox(12);
+        HBox brandBox = new HBox(10);
         brandBox.setAlignment(Pos.CENTER_LEFT);
-        brandBox.setPadding(new Insets(4, 12, 24, 12));
+        brandBox.setPadding(new Insets(2, 10, 18, 10));
 
-        Node logo = Theme.createLogoMark(28);
+        Node logo = Theme.createLogoMark(24);
 
         Label brandTitle = new Label("My Library");
-        brandTitle.setFont(Font.font("System", FontWeight.BOLD, 18));
+        brandTitle.setFont(Font.font("System", FontWeight.BOLD, 16));
         brandTitle.setTextFill(Theme.TEXT_PRIMARY);
 
         brandBox.getChildren().addAll(logo, brandTitle);
         sidebarBox.getChildren().add(brandBox);
+        sidebarBox.getChildren().add(Theme.createOrnamentalSeparator());
 
         // Navigation Category Label
         Label navTitle = new Label("MAIN NAVIGATION");
-        navTitle.setFont(Font.font("System", FontWeight.BOLD, 11));
+        navTitle.setFont(Font.font("System", FontWeight.BOLD, 10));
         navTitle.setTextFill(Theme.TEXT_MUTED);
-        navTitle.setPadding(new Insets(4, 12, 8, 12));
+        navTitle.setPadding(new Insets(4, 10, 6, 10));
         sidebarBox.getChildren().add(navTitle);
 
         String[][] navItems = {
@@ -218,8 +223,8 @@ public class MainView {
         // Sidebar Footer Note
         Label versionLabel = new Label("My Library  •  Desktop v1.0");
         versionLabel.setFont(Font.font("System", 10));
-        versionLabel.setTextFill(Color.web("#5E5275"));
-        versionLabel.setPadding(new Insets(8, 12, 4, 12));
+        versionLabel.setTextFill(Theme.TEXT_MUTED);
+        versionLabel.setPadding(new Insets(6, 10, 4, 10));
         sidebarBox.getChildren().add(versionLabel);
 
         return sidebarBox;
@@ -228,19 +233,19 @@ public class MainView {
     private Button createNavButton(String text, String viewName, String icon) {
         Button btn = new Button();
         btn.setMaxWidth(Double.MAX_VALUE);
-        btn.setPrefHeight(42);
+        btn.setPrefHeight(36);
         btn.setAlignment(Pos.CENTER_LEFT);
-        btn.setPadding(new Insets(0, 14, 0, 14));
+        btn.setPadding(new Insets(0, 12, 0, 12));
         btn.setCursor(javafx.scene.Cursor.HAND);
 
-        HBox content = new HBox(12);
+        HBox content = new HBox(10);
         content.setAlignment(Pos.CENTER_LEFT);
 
         Label iconLbl = new Label(icon);
-        iconLbl.setFont(Font.font("System", 15));
+        iconLbl.setFont(Font.font("System", 13));
 
         Label textLbl = new Label(text);
-        textLbl.setFont(Font.font("System", FontWeight.MEDIUM, 13));
+        textLbl.setFont(Font.font("System", FontWeight.MEDIUM, 12));
 
         content.getChildren().addAll(iconLbl, textLbl);
         btn.setGraphic(content);
@@ -253,19 +258,14 @@ public class MainView {
     }
 
     private void styleNavButtonActive(Button btn, Label textLbl) {
-        btn.setBackground(new Background(new BackgroundFill(Color.web("#281447"), Theme.RADII_MEDIUM, Insets.EMPTY)));
+        btn.setBackground(new Background(new BackgroundFill(Color.web("#1E1530"), Theme.RADII_MEDIUM, Insets.EMPTY)));
         btn.setBorder(new Border(new BorderStroke(
-            Color.web("#8B5CF6"), Theme.BORDER_SUBTLE, Theme.BORDER_SUBTLE, Theme.BORDER_SUBTLE,
+            Theme.BORDER_GOLD, Theme.BORDER_SUBTLE, Theme.BORDER_SUBTLE, Theme.BORDER_GOLD,
             BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID, BorderStrokeStyle.SOLID,
-            Theme.RADII_MEDIUM, new BorderWidths(1.5, 1, 1, 1), Insets.EMPTY
+            Theme.RADII_MEDIUM, new BorderWidths(1, 1, 1, 3), Insets.EMPTY
         )));
-        textLbl.setTextFill(Theme.TEXT_PRIMARY);
-
-        DropShadow glow = new DropShadow();
-        glow.setColor(Color.web("#7C3AED", 0.45));
-        glow.setRadius(12);
-        glow.setSpread(0.1);
-        btn.setEffect(glow);
+        textLbl.setTextFill(Theme.PARCHMENT);
+        btn.setEffect(null);
     }
 
     private void styleNavButtonInactive(Button btn, Label textLbl) {
@@ -276,7 +276,7 @@ public class MainView {
 
         btn.setOnMouseEntered(e -> {
             if (!viewNameMatchesActive(btn)) {
-                btn.setBackground(new Background(new BackgroundFill(Color.web("#171026"), Theme.RADII_MEDIUM, Insets.EMPTY)));
+                btn.setBackground(new Background(new BackgroundFill(Color.web("#161024"), Theme.RADII_MEDIUM, Insets.EMPTY)));
                 textLbl.setTextFill(Theme.TEXT_SECONDARY);
             }
         });
@@ -347,7 +347,7 @@ public class MainView {
         headerTitle.setText(title);
         headerSubtitle.setText(subtitle);
 
-        FadeTransition ft = new FadeTransition(Duration.millis(220), newView);
+        FadeTransition ft = new FadeTransition(Duration.millis(140), newView);
         ft.setFromValue(0.0);
         ft.setToValue(1.0);
 

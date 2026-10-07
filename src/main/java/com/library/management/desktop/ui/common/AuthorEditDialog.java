@@ -113,12 +113,14 @@ public class AuthorEditDialog extends Dialog<Boolean> {
         apiService.updateAuthor(author.getId(), request)
                 .thenAccept(response -> Platform.runLater(() -> {
                     saveButton.setDisable(false);
-                    showSuccess("Author updated successfully!");
+                    setResult(true);
+                    close();
                 }))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
                         saveButton.setDisable(false);
-                        showError("Failed to update author: " + ex.getMessage());
+                        String errorMsg = ex.getCause() != null ? ex.getCause().getMessage() : ex.getMessage();
+                        showError("Failed to update author: " + errorMsg);
                     });
                     return null;
                 });
@@ -130,6 +132,7 @@ public class AuthorEditDialog extends Dialog<Boolean> {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Validation Error");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 
@@ -137,6 +140,7 @@ public class AuthorEditDialog extends Dialog<Boolean> {
         Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
         alert.setTitle("Success");
         alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 }

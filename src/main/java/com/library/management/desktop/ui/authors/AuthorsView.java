@@ -44,7 +44,6 @@ public class AuthorsView {
         this.apiClient = apiClient;
         this.loadingOverlay = new LoadingOverlay();
         this.root = createLayout();
-        loadData();
     }
 
     private VBox createLayout() {
@@ -250,9 +249,10 @@ public class AuthorsView {
 
     private void updateEmptyState(boolean isEmpty) {
         if (isEmpty) {
-            Label emptyLabel = new Label(currentSearch.isEmpty() ? "No authors found" : "No authors match your search");
-            emptyLabel.getStyleClass().add("empty-state-label");
-            table.setPlaceholder(emptyLabel);
+            table.setPlaceholder(com.library.management.desktop.theme.Theme.createEmptyStateNode(
+                currentSearch.isEmpty() ? "No Authors Found" : "No Matching Authors",
+                "Try searching with another keyword or add a new author to the archives."
+            ));
         } else {
             table.setPlaceholder(new Label("No data available"));
         }
@@ -261,7 +261,10 @@ public class AuthorsView {
     private void showAddDialog() {
         AuthorCreateDialog dialog = new AuthorCreateDialog(apiService);
         dialog.showAndWait().ifPresent(result -> {
-            if (result) loadData();
+            if (result) {
+                loadData();
+                showSuccess("Author added successfully.");
+            }
         });
     }
 
@@ -270,7 +273,10 @@ public class AuthorsView {
         if (selected != null) {
             AuthorEditDialog dialog = new AuthorEditDialog(apiService, selected);
             dialog.showAndWait().ifPresent(result -> {
-                if (result) loadData();
+                if (result) {
+                    loadData();
+                    showSuccess("Author details updated successfully.");
+                }
             });
         }
     }
@@ -284,6 +290,7 @@ public class AuthorsView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Confirm Delete");
         confirm.setHeaderText("Delete Author");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -291,6 +298,7 @@ public class AuthorsView {
                         .thenRun(() -> Platform.runLater(() -> {
                             loadingOverlay.hide();
                             loadData();
+                            showSuccess("Author removed successfully.");
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
@@ -303,10 +311,19 @@ public class AuthorsView {
         });
     }
 
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
+        alert.showAndWait();
+    }
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Operation Failed");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 

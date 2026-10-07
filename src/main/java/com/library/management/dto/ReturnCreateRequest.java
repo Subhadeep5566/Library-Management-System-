@@ -23,6 +23,7 @@ public class ReturnCreateRequest {
 
     private LocalDate returnDate;
 
+    @Builder.Default
     private ReturnCondition condition = ReturnCondition.GOOD;
 
     private String notes;

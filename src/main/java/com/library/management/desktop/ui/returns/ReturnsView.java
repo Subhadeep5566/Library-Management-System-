@@ -42,7 +42,6 @@ public class ReturnsView {
         this.apiClient = apiClient;
         this.loadingOverlay = new LoadingOverlay();
         this.root = createLayout();
-        loadData();
     }
 
     private VBox createLayout() {
@@ -145,7 +144,7 @@ public class ReturnsView {
 
         TableColumn<ReturnResponse, String> conditionCol = new TableColumn<>("Condition");
         conditionCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getCondition()));
-        conditionCol.setMinWidth(120);
+        conditionCol.setMinWidth(130);
         conditionCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -154,14 +153,8 @@ public class ReturnsView {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(item);
-                    String color = switch (item) {
-                        case "GOOD" -> "#10B981";
-                        case "DAMAGED" -> "#F59E0B";
-                        case "LOST" -> "#EF4444";
-                        default -> "#8B7FA3";
-                    };
-                    setStyle("-fx-text-fill: " + color + "; -fx-font-weight: bold;");
+                    setText(null);
+                    setGraphic(com.library.management.desktop.theme.Theme.createStatusBadge(item, item));
                 }
             }
         });
@@ -248,9 +241,10 @@ public class ReturnsView {
 
     private void updateEmptyState(boolean isEmpty) {
         if (isEmpty) {
-            Label emptyLabel = new Label(currentSearch.isEmpty() ? "No returns found" : "No returns match your search");
-            emptyLabel.getStyleClass().add("empty-state-label");
-            table.setPlaceholder(emptyLabel);
+            table.setPlaceholder(com.library.management.desktop.theme.Theme.createEmptyStateNode(
+                currentSearch.isEmpty() ? "No Return Records" : "No Matching Returns",
+                "Returned volumes and their inspected conditions will appear here."
+            ));
         } else {
             table.setPlaceholder(new Label("No data available"));
         }
@@ -259,14 +253,26 @@ public class ReturnsView {
     private void showAddDialog() {
         ReturnCreateDialog dialog = new ReturnCreateDialog(apiService);
         dialog.showAndWait().ifPresent(result -> {
-            if (result) loadData();
+            if (result) {
+                loadData();
+                showSuccess("Return processed successfully.");
+            }
         });
+    }
+
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
+        alert.showAndWait();
     }
 
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Operation Failed");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 

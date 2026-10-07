@@ -46,9 +46,11 @@ public class Book {
     private Integer pageCount;
 
     @Column(name = "total_copies", nullable = false)
+    @Builder.Default
     private Integer totalCopies = 1;
 
     @Column(name = "available_copies", nullable = false)
+    @Builder.Default
     private Integer availableCopies = 1;
 
     @Column(name = "shelf_location", length = 50)
@@ -59,6 +61,7 @@ public class Book {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private BookStatus status = BookStatus.AVAILABLE;
 
     @ManyToOne(fetch = FetchType.LAZY)

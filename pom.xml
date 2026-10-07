@@ -9,8 +9,8 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>Library Management System</name>
-    <description>A Library Management System built with Spring Boot</description>
+    <name>My Library</name>
+    <description>My Library desktop application and REST API built with Spring Boot and JavaFX</description>
 
     <parent>
         <groupId>org.springframework.boot</groupId>

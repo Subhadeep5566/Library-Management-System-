@@ -43,7 +43,6 @@ public class BorrowsView {
         this.apiClient = apiClient;
         this.loadingOverlay = new LoadingOverlay();
         this.root = createLayout();
-        loadData();
     }
 
     private VBox createLayout() {
@@ -169,7 +168,7 @@ public class BorrowsView {
 
         TableColumn<BorrowResponse, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getStatus()));
-        statusCol.setMinWidth(120);
+        statusCol.setMinWidth(130);
         statusCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -178,8 +177,8 @@ public class BorrowsView {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(item);
-                    setStyle("-fx-text-fill: " + getStatusColor(item) + "; -fx-font-weight: bold;");
+                    setText(null);
+                    setGraphic(com.library.management.desktop.theme.Theme.createStatusBadge(item, item));
                 }
             }
         });
@@ -288,7 +287,10 @@ public class BorrowsView {
     private void showAddDialog() {
         BorrowCreateDialog dialog = new BorrowCreateDialog(apiService);
         dialog.showAndWait().ifPresent(result -> {
-            if (result) loadData();
+            if (result) {
+                loadData();
+                showSuccess("Book borrowed successfully.");
+            }
         });
     }
 
@@ -301,6 +303,7 @@ public class BorrowsView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Confirm Return");
         confirm.setHeaderText("Return Book");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -308,6 +311,7 @@ public class BorrowsView {
                         .thenRun(() -> Platform.runLater(() -> {
                             loadingOverlay.hide();
                             loadData();
+                            showSuccess("Book returned successfully.");
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
@@ -329,6 +333,7 @@ public class BorrowsView {
                 ButtonType.YES, ButtonType.NO);
         confirm.setTitle("Confirm Mark Lost");
         confirm.setHeaderText("Mark Book Lost");
+        com.library.management.desktop.theme.Theme.styleDialog(confirm);
         confirm.showAndWait().ifPresent(response -> {
             if (response == ButtonType.YES) {
                 loadingOverlay.show();
@@ -336,6 +341,7 @@ public class BorrowsView {
                         .thenRun(() -> Platform.runLater(() -> {
                             loadingOverlay.hide();
                             loadData();
+                            showSuccess("Book marked as lost.");
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
@@ -348,10 +354,19 @@ public class BorrowsView {
         });
     }
 
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
+        alert.showAndWait();
+    }
+
     private void showError(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR, message, ButtonType.OK);
         alert.setTitle("Error");
         alert.setHeaderText("Operation Failed");
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
         alert.showAndWait();
     }
 

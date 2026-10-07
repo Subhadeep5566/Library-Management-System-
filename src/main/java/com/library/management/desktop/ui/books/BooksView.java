@@ -171,7 +171,7 @@ public class BooksView {
 
         TableColumn<BookResponse, String> statusCol = new TableColumn<>("Status");
         statusCol.setCellValueFactory(cell -> new javafx.beans.property.SimpleStringProperty(cell.getValue().getStatus()));
-        statusCol.setMinWidth(120);
+        statusCol.setMinWidth(130);
         statusCol.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(String item, boolean empty) {
@@ -180,8 +180,8 @@ public class BooksView {
                     setText(null);
                     setGraphic(null);
                 } else {
-                    setText(item);
-                    setStyle("-fx-text-fill: " + getStatusColor(item) + "; -fx-font-weight: bold;");
+                    setText(null);
+                    setGraphic(com.library.management.desktop.theme.Theme.createStatusBadge(item, item));
                 }
             }
         });
@@ -280,9 +280,10 @@ public class BooksView {
 
     private void updateEmptyState(boolean isEmpty) {
         if (isEmpty) {
-            Label emptyLabel = new Label(currentSearch.isEmpty() ? "No books found" : "No books match your search");
-            emptyLabel.getStyleClass().add("empty-state-label");
-            table.setPlaceholder(emptyLabel);
+            table.setPlaceholder(com.library.management.desktop.theme.Theme.createEmptyStateNode(
+                currentSearch.isEmpty() ? "No volumes found" : "No matching volumes found",
+                "Try searching by another term or add a new book to the library collection."
+            ));
         } else {
             table.setPlaceholder(new Label("No data available"));
         }
@@ -291,7 +292,10 @@ public class BooksView {
     private void showAddDialog() {
         BookCreateDialog dialog = new BookCreateDialog(apiService);
         dialog.showAndWait().ifPresent(result -> {
-            if (result) loadData();
+            if (result) {
+                loadData();
+                showSuccess("Book cataloged successfully.");
+            }
         });
     }
 
@@ -300,7 +304,10 @@ public class BooksView {
         if (selected != null) {
             BookEditDialog dialog = new BookEditDialog(apiService, selected);
             dialog.showAndWait().ifPresent(result -> {
-                if (result) loadData();
+                if (result) {
+                    loadData();
+                    showSuccess("Book details updated successfully.");
+                }
             });
         }
     }
@@ -322,6 +329,7 @@ public class BooksView {
                         .thenRun(() -> Platform.runLater(() -> {
                             loadingOverlay.hide();
                             loadData();
+                            showSuccess("Book removed successfully.");
                         }))
                         .exceptionally(ex -> {
                             Platform.runLater(() -> {
@@ -332,6 +340,14 @@ public class BooksView {
                         });
             }
         });
+    }
+
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION, message, ButtonType.OK);
+        alert.setTitle("Success");
+        alert.setHeaderText(null);
+        com.library.management.desktop.theme.Theme.styleDialog(alert);
+        alert.showAndWait();
     }
 
     private void showError(String message) {

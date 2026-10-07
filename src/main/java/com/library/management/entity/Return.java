@@ -21,10 +21,12 @@ public class Return {
     private Long id;
 
     @Column(name = "return_date", nullable = false)
+    @Builder.Default
     private LocalDate returnDate = LocalDate.now();
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false, length = 20)
+    @Column(name = "`condition`", nullable = false, length = 20)
+    @Builder.Default
     private ReturnCondition condition = ReturnCondition.GOOD;
 
     @Column(length = 1000)

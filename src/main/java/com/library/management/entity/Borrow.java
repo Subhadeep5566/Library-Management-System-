@@ -22,6 +22,7 @@ public class Borrow {
     private Long id;
 
     @Column(name = "borrow_date", nullable = false)
+    @Builder.Default
     private LocalDate borrowDate = LocalDate.now();
 
     @Column(name = "due_date", nullable = false)
@@ -32,6 +33,7 @@ public class Borrow {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
+    @Builder.Default
     private BorrowStatus status = BorrowStatus.BORROWED;
 
     @Column(length = 1000)
