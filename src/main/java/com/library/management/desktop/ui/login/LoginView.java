@@ -55,13 +55,13 @@ public class LoginView {
         this.passwordField = new PasswordField();
         this.plainPasswordField = new TextField();
         this.togglePasswordBtn = new Button("👁");
-        this.loginButton = new Button("Sign In");
+        this.loginButton = new Button("SIGN IN");
         this.messageLabel = new Label();
         this.progressIndicator = new ProgressIndicator();
-        this.titleLabel = new Label("My Library");
-        this.subtitleLabel = new Label("Your books. Your knowledge. Your library.");
-        this.logoNode = Theme.createLoginLogoMark(38);
-        this.loginPanel = new VBox(18);
+        this.titleLabel = new Label("MY LIBRARY");
+        this.subtitleLabel = new Label("A place for every story.");
+        this.logoNode = Theme.createLoginLogoMark(42);
+        this.loginPanel = new VBox(22);
 
         this.cinematicBgPane = new CinematicBackgroundPane();
         this.atmosphericOverlay = createAtmosphericOverlay();
@@ -78,12 +78,12 @@ public class LoginView {
         overlay.setBackground(new Background(new BackgroundFill(
             new LinearGradient(
                 0, 0, 1, 0, true, CycleMethod.NO_CYCLE,
-                new Stop(0.00, Color.color(0.04, 0.02, 0.07, 0.00)),   // Leftmost edge: completely transparent
-                new Stop(0.35, Color.color(0.04, 0.02, 0.07, 0.04)),   // Chariot & divine horses fully clear
-                new Stop(0.52, Color.color(0.05, 0.03, 0.08, 0.28)),   // Gentle atmospheric blend begins
-                new Stop(0.68, Color.color(0.06, 0.03, 0.10, 0.68)),   // Atmosphere deepens smoothly
-                new Stop(0.85, Color.color(0.06, 0.02, 0.09, 0.88)),   // Darker backdrop for form contrast
-                new Stop(1.00, Color.color(0.05, 0.02, 0.08, 0.94))    // Far right margin
+                new Stop(0.00, Color.color(0.06, 0.03, 0.01, 0.00)),   // Far left edge: completely transparent
+                new Stop(0.44, Color.color(0.06, 0.03, 0.01, 0.00)),   // Reading room stacks, ladder & lamps fully visible
+                new Stop(0.58, Color.color(0.07, 0.04, 0.02, 0.24)),   // Warm amber-mahogany atmosphere begins
+                new Stop(0.72, Color.color(0.08, 0.04, 0.02, 0.68)),   // Deep walnut shade deepens smoothly
+                new Stop(0.86, Color.color(0.07, 0.03, 0.01, 0.88)),   // High contrast area for integrated form controls
+                new Stop(1.00, Color.color(0.05, 0.02, 0.01, 0.94))    // Far right margin
             ),
             CornerRadii.EMPTY, Insets.EMPTY
         )));
@@ -94,80 +94,101 @@ public class LoginView {
         BorderPane borderPane = new BorderPane();
         borderPane.setBackground(Background.EMPTY);
 
-        // Center / Left area is left open so the Mahabharata chariot artwork dominates
+        // Center / Left area is open so the magnificent library stacks, ladder, and tables dominate
         Region spacer = new Region();
         borderPane.setCenter(spacer);
 
-        // Right side container for the login panel
+        // Right side container for the login panel - NO CARD, naturally integrated
         VBox rightColumn = new VBox();
         rightColumn.setAlignment(Pos.CENTER);
-        rightColumn.setPrefWidth(460);
-        rightColumn.setMaxWidth(480);
+        rightColumn.setPrefWidth(470);
+        rightColumn.setMaxWidth(500);
         rightColumn.setMinWidth(350);
-        rightColumn.setPadding(new Insets(24, 72, 24, 24));
+        rightColumn.setPadding(new Insets(24, 76, 24, 20));
 
-        loginPanel.setAlignment(Pos.CENTER);
-        loginPanel.setMaxWidth(380);
+        // loginPanel sits directly in the scene with generous breathing room and NO card outline
+        loginPanel.setAlignment(Pos.CENTER_LEFT);
+        loginPanel.setMaxWidth(360);
         loginPanel.setMinWidth(320);
-        loginPanel.setPadding(new Insets(32, 28, 32, 28));
-        loginPanel.setBackground(new Background(new BackgroundFill(
-            Color.web("#100A1A", 0.58), new CornerRadii(12), Insets.EMPTY
-        )));
-        loginPanel.setBorder(new Border(new BorderStroke(
-            Color.web("#C5A059", 0.22), BorderStrokeStyle.SOLID, new CornerRadii(12), new BorderWidths(1.0)
-        )));
+        loginPanel.setPadding(new Insets(16, 0, 16, 0));
+        loginPanel.setBackground(Background.EMPTY);
+        loginPanel.setBorder(Border.EMPTY);
+        loginPanel.setEffect(null);
 
-        DropShadow panelShadow = new DropShadow();
-        panelShadow.setColor(Color.color(0, 0, 0, 0.40));
-        panelShadow.setRadius(20);
-        panelShadow.setOffsetY(4);
-        loginPanel.setEffect(panelShadow);
-
-        // 1. Header: Book Icon + Title + Subtitle + Ornamental Separator
-        VBox headerBox = new VBox(8);
+        // 1. Header: Elegant Book Icon + "MY LIBRARY" Title + Subtitle + Ornamental Divider
+        VBox headerBox = new VBox(10);
         headerBox.setAlignment(Pos.CENTER);
-        headerBox.setPadding(new Insets(0, 0, 6, 0));
+        headerBox.setPadding(new Insets(0, 0, 8, 0));
 
-        titleLabel.setFont(Font.font("Georgia", FontWeight.BOLD, 28));
-        titleLabel.setStyle("-fx-text-fill: #FAF7F2; -fx-font-family: 'Georgia', serif; -fx-font-size: 28px; -fx-font-weight: bold;");
+        titleLabel.setFont(Font.font("Georgia", FontWeight.BOLD, 32));
+        titleLabel.setStyle(
+            "-fx-text-fill: #FAF7F2; " +
+            "-fx-font-family: 'Georgia', 'Garamond', 'Baskerville', serif; " +
+            "-fx-font-size: 32px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-letter-spacing: 2px;"
+        );
 
-        subtitleLabel.setFont(Font.font("Georgia", FontPosture.ITALIC, 12.5));
-        subtitleLabel.setStyle("-fx-text-fill: #D4C7B5; -fx-font-family: 'Georgia', serif; -fx-font-size: 12.5px; -fx-font-style: italic;");
+        DropShadow titleEmboss = new DropShadow();
+        titleEmboss.setColor(Color.web("#C5A059", 0.35));
+        titleEmboss.setRadius(8);
+        titleEmboss.setOffsetY(1);
+        titleLabel.setEffect(titleEmboss);
+
+        subtitleLabel.setFont(Font.font("Georgia", FontPosture.ITALIC, 13.5));
+        subtitleLabel.setStyle(
+            "-fx-text-fill: #D4C7B5; " +
+            "-fx-font-family: 'Georgia', serif; " +
+            "-fx-font-size: 13.5px; " +
+            "-fx-font-style: italic;"
+        );
 
         Node separator = Theme.createOrnamentalSeparator();
 
         headerBox.getChildren().addAll(logoNode, titleLabel, subtitleLabel, separator);
 
         // 2. Username Field Group
-        VBox usernameGroup = new VBox(6);
+        VBox usernameGroup = new VBox(7);
         usernameGroup.setAlignment(Pos.CENTER_LEFT);
-        Label userLabel = new Label("Username");
-        userLabel.setFont(Font.font("System", FontWeight.SEMI_BOLD, 12));
-        userLabel.setStyle("-fx-text-fill: #E2D9CC; -fx-font-size: 12px; -fx-font-weight: 600;");
+        Label userLabel = new Label("USERNAME");
+        userLabel.setFont(Font.font("Georgia", FontWeight.BOLD, 11));
+        userLabel.setStyle(
+            "-fx-text-fill: #C5A059; " +
+            "-fx-font-family: 'Georgia', serif; " +
+            "-fx-font-size: 11px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-letter-spacing: 1.5px;"
+        );
 
-        usernameField.setPromptText("Enter username");
-        usernameField.setPrefHeight(42);
-        usernameField.setFont(Font.font("System", 13));
+        usernameField.setPromptText("Enter your username");
+        usernameField.setPrefHeight(44);
+        usernameField.setFont(Font.font("Segoe UI", 13.5));
         Theme.styleLoginTextField(usernameField);
         usernameField.setOnAction(e -> handleLogin());
         usernameGroup.getChildren().addAll(userLabel, usernameField);
 
         // 3. Password Field Group with Visibility Toggle
-        VBox passwordGroup = new VBox(6);
+        VBox passwordGroup = new VBox(7);
         passwordGroup.setAlignment(Pos.CENTER_LEFT);
-        Label passLabel = new Label("Password");
-        passLabel.setFont(Font.font("System", FontWeight.SEMI_BOLD, 12));
-        passLabel.setStyle("-fx-text-fill: #E2D9CC; -fx-font-size: 12px; -fx-font-weight: 600;");
+        Label passLabel = new Label("PASSWORD");
+        passLabel.setFont(Font.font("Georgia", FontWeight.BOLD, 11));
+        passLabel.setStyle(
+            "-fx-text-fill: #C5A059; " +
+            "-fx-font-family: 'Georgia', serif; " +
+            "-fx-font-size: 11px; " +
+            "-fx-font-weight: bold; " +
+            "-fx-letter-spacing: 1.5px;"
+        );
 
-        passwordField.setPromptText("Enter password");
-        passwordField.setPrefHeight(42);
-        passwordField.setFont(Font.font("System", 13));
+        passwordField.setPromptText("Enter your password");
+        passwordField.setPrefHeight(44);
+        passwordField.setFont(Font.font("Segoe UI", 13.5));
         Theme.styleLoginPasswordField(passwordField);
         passwordField.setOnAction(e -> handleLogin());
 
-        plainPasswordField.setPromptText("Enter password");
-        plainPasswordField.setPrefHeight(42);
-        plainPasswordField.setFont(Font.font("System", 13));
+        plainPasswordField.setPromptText("Enter your password");
+        plainPasswordField.setPrefHeight(44);
+        plainPasswordField.setFont(Font.font("Segoe UI", 13.5));
         Theme.styleLoginTextField(plainPasswordField);
         plainPasswordField.setVisible(false);
         plainPasswordField.setManaged(false);
@@ -175,7 +196,7 @@ public class LoginView {
 
         passwordField.textProperty().bindBidirectional(plainPasswordField.textProperty());
 
-        togglePasswordBtn.setFont(Font.font("System", 13));
+        togglePasswordBtn.setFont(Font.font("System", 14));
         togglePasswordBtn.setStyle("-fx-text-fill: #C5A059; -fx-background-color: transparent; -fx-cursor: hand;");
         togglePasswordBtn.setPadding(new Insets(0, 12, 0, 0));
         togglePasswordBtn.setOnAction(e -> togglePasswordVisibility());
@@ -183,13 +204,14 @@ public class LoginView {
         togglePasswordBtn.setOnMouseExited(e -> togglePasswordBtn.setStyle("-fx-text-fill: #C5A059; -fx-background-color: transparent; -fx-cursor: hand;"));
 
         StackPane passwordFieldContainer = new StackPane(passwordField, plainPasswordField, togglePasswordBtn);
+        passwordFieldContainer.setMaxWidth(Double.MAX_VALUE);
         StackPane.setAlignment(togglePasswordBtn, Pos.CENTER_RIGHT);
 
         passwordGroup.getChildren().addAll(passLabel, passwordFieldContainer);
 
         // 4. Primary Sign In Button
-        loginButton.setText("Sign In");
-        loginButton.setPrefHeight(42);
+        loginButton.setText("SIGN IN");
+        loginButton.setPrefHeight(44);
         loginButton.setMaxWidth(Double.MAX_VALUE);
         Theme.styleLoginButton(loginButton);
         loginButton.setOnAction(e -> handleLogin());
@@ -201,35 +223,22 @@ public class LoginView {
 
         StackPane buttonStack = new StackPane(loginButton, progressIndicator);
         StackPane.setAlignment(progressIndicator, Pos.CENTER);
-        buttonStack.setPadding(new Insets(6, 0, 0, 0));
+        buttonStack.setMaxWidth(Double.MAX_VALUE);
+        buttonStack.setPadding(new Insets(8, 0, 0, 0));
 
         // 5. Status Message Banner
-        messageLabel.setFont(Font.font("System", 12));
+        messageLabel.setFont(Font.font("Georgia", 12.5));
         messageLabel.setWrapText(true);
         messageLabel.setAlignment(Pos.CENTER);
         messageLabel.setTextAlignment(javafx.scene.text.TextAlignment.CENTER);
         messageLabel.setVisible(false);
         messageLabel.setManaged(false);
-        messageLabel.setMaxWidth(340);
+        messageLabel.setMaxWidth(360);
 
         loginPanel.getChildren().addAll(headerBox, usernameGroup, passwordGroup, buttonStack, messageLabel);
         rightColumn.getChildren().add(loginPanel);
 
-        // Root ScrollPane with transparent styling so the background artwork seamlessly shows through
-        ScrollPane rightScrollPane = new ScrollPane(rightColumn);
-        rightScrollPane.setFitToWidth(true);
-        rightScrollPane.setFitToHeight(true);
-        rightScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        rightScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
-        rightScrollPane.setStyle(
-            "-fx-background: transparent; " +
-            "-fx-background-color: transparent; " +
-            "-fx-control-inner-background: transparent; " +
-            "-fx-background-insets: 0; " +
-            "-fx-padding: 0;"
-        );
-
-        borderPane.setRight(rightScrollPane);
+        borderPane.setRight(rightColumn);
         return borderPane;
     }
 
@@ -255,10 +264,14 @@ public class LoginView {
     }
 
     private void animateEntrance() {
-        FadeTransition formFade = new FadeTransition(Duration.millis(260), loginPanel);
-        formFade.setFromValue(0.0);
+        FadeTransition formFade = new FadeTransition(Duration.millis(500), loginPanel);
+        formFade.setFromValue(0.15);
         formFade.setToValue(1.0);
         formFade.play();
+    }
+
+    public VBox getLoginPanel() {
+        return loginPanel;
     }
 
     private void handleLogin() {
@@ -301,7 +314,7 @@ public class LoginView {
         } else {
             progressIndicator.setVisible(false);
             progressIndicator.setManaged(false);
-            loginButton.setText("Sign In");
+            loginButton.setText("SIGN IN");
         }
     }
 
@@ -309,28 +322,28 @@ public class LoginView {
         messageLabel.setText(message);
 
         if ("error".equals(type)) {
-            messageLabel.setTextFill(Color.web("#FECDD3"));
+            messageLabel.setTextFill(Color.web("#FCE8E6"));
             messageLabel.setBackground(new Background(
-                new BackgroundFill(Color.web("#3D0C15", 0.90), Theme.RADII_MEDIUM, Insets.EMPTY)
+                new BackgroundFill(Color.web("#421815", 0.92), Theme.RADII_MEDIUM, Insets.EMPTY)
             ));
             messageLabel.setBorder(new Border(
-                new BorderStroke(Color.web("#E11D48"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
+                new BorderStroke(Color.web("#C53030"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
             ));
         } else if ("success".equals(type)) {
-            messageLabel.setTextFill(Color.web("#A7F3D0"));
+            messageLabel.setTextFill(Color.web("#E6F4EA"));
             messageLabel.setBackground(new Background(
-                new BackgroundFill(Color.web("#052E20", 0.90), Theme.RADII_MEDIUM, Insets.EMPTY)
+                new BackgroundFill(Color.web("#13361E", 0.92), Theme.RADII_MEDIUM, Insets.EMPTY)
             ));
             messageLabel.setBorder(new Border(
-                new BorderStroke(Color.web("#059669"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
+                new BorderStroke(Color.web("#2E7D32"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
             ));
         } else {
-            messageLabel.setTextFill(Color.web("#DDD6FE"));
+            messageLabel.setTextFill(Color.web("#FAF7F2"));
             messageLabel.setBackground(new Background(
-                new BackgroundFill(Color.web("#231145", 0.90), Theme.RADII_MEDIUM, Insets.EMPTY)
+                new BackgroundFill(Color.web("#2A1C12", 0.92), Theme.RADII_MEDIUM, Insets.EMPTY)
             ));
             messageLabel.setBorder(new Border(
-                new BorderStroke(Color.web("#7C3AED"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
+                new BorderStroke(Color.web("#C5A059"), BorderStrokeStyle.SOLID, Theme.RADII_MEDIUM, new BorderWidths(1))
             ));
         }
 
@@ -380,7 +393,7 @@ public class LoginView {
         return loginButton;
     }
 
-    // --- Cinematic Background Pane with Cover-Fit and Left-Center Framing ---
+    // --- Cinematic Background Pane with Cover-Fit and Library Stacks Framing ---
     private static class CinematicBackgroundPane extends Pane {
         private final ImageView imageView;
         private final Image bgImage;
@@ -433,9 +446,9 @@ public class LoginView {
             imageView.setFitWidth(fitW);
             imageView.setFitHeight(fitH);
 
-            // Anchor left-center so the chariot, steeds, and warriors are framed prominently
+            // Anchor left-center so the grand library stacks, rolling ladder, and amber lamps are centered and visible
             double extraX = w - fitW;
-            double posX = extraX * 0.15;
+            double posX = extraX * 0.25;
             double posY = (h - fitH) * 0.5;
 
             imageView.setLayoutX(posX);

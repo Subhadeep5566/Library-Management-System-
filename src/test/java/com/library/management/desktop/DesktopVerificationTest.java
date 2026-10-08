@@ -183,7 +183,7 @@ public class DesktopVerificationTest {
     }
 
     @Test
-    @DisplayName("Verify Cinematic Mahabharata Login Screen Architecture and Resizing")
+    @DisplayName("Verify Classic Library Landscape Login Screen Architecture and Resizing")
     void testCinematicLoginView() throws Exception {
         if (!javaFxStarted) return;
 
@@ -207,6 +207,7 @@ public class DesktopVerificationTest {
                 // Test responsive resizing
                 double[][] resolutions = {
                     {1280, 720},
+                    {1280, 750},
                     {1366, 768},
                     {1440, 810},
                     {1600, 900},
@@ -218,6 +219,25 @@ public class DesktopVerificationTest {
                     root.layout();
                     assertTrue(root.getWidth() > 0 && root.getHeight() > 0);
                 }
+
+                // Render and capture snapshot at 1280x750 landscape for visual verification
+                loginView.getLoginPanel().setOpacity(1.0);
+                new javafx.scene.Scene(root, 1280, 750);
+                root.resize(1280, 750);
+                root.applyCss();
+                root.layout();
+                javafx.scene.image.WritableImage snapshot = root.snapshot(new javafx.scene.SnapshotParameters(), null);
+                int snapW = (int) snapshot.getWidth();
+                int snapH = (int) snapshot.getHeight();
+                java.awt.image.BufferedImage bi = new java.awt.image.BufferedImage(snapW, snapH, java.awt.image.BufferedImage.TYPE_INT_ARGB);
+                javafx.scene.image.PixelReader pr = snapshot.getPixelReader();
+                for (int y = 0; y < snapH; y++) {
+                    for (int x = 0; x < snapW; x++) {
+                        bi.setRGB(x, y, pr.getArgb(x, y));
+                    }
+                }
+                new java.io.File("target").mkdirs();
+                javax.imageio.ImageIO.write(bi, "png", new java.io.File("target/login-screen-verification.png"));
 
                 // Verify classpath image resource is present and valid
                 var is = getClass().getResourceAsStream("/images/login-background.jpg");

@@ -23,10 +23,10 @@ public class LibraryDesktopApplication extends Application {
     public void start(Stage primaryStage) {
         this.primaryStage = primaryStage;
         primaryStage.setTitle("My Library");
-        primaryStage.setMinWidth(1080);
+        primaryStage.setMinWidth(1024);
         primaryStage.setMinHeight(640);
-        primaryStage.setWidth(1440);
-        primaryStage.setHeight(810);
+        primaryStage.setWidth(1280);
+        primaryStage.setHeight(750);
         primaryStage.setResizable(true);
 
         primaryStage.setOnCloseRequest(e -> {
@@ -45,12 +45,12 @@ public class LibraryDesktopApplication extends Application {
     private void initializeViews() {
         loginView = new LoginView(authService, this::onLoginSuccess);
         com.library.management.desktop.theme.Theme.applyLoginTheme(loginView.getRoot());
-        loginScene = new Scene(loginView.getRoot(), 1440, 810, javafx.scene.paint.Color.web("#0A0710"));
+        loginScene = new Scene(loginView.getRoot(), 1280, 750, javafx.scene.paint.Color.web("#140D07"));
 
         ApiService apiService = new ApiService(apiClient);
         mainView = new MainView(apiClient, apiService, authService, this::onLogout);
         com.library.management.desktop.theme.Theme.applyRootTheme(mainView.getRoot());
-        mainScene = new Scene(mainView.getRoot(), 1440, 810);
+        mainScene = new Scene(mainView.getRoot(), 1280, 750);
     }
 
     private void showLoginScreen() {

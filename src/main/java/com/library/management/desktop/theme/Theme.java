@@ -360,126 +360,186 @@ public final class Theme {
         return container;
     }
 
-    // --- Login Scene Scholarly Theme ---
+    // --- Login Scene Classic Library Theme ---
     public static void applyLoginTheme(javafx.scene.Parent root) {
         if (root == null) return;
         root.setStyle(
-            "-fx-base: #0B0813; " +
-            "-fx-background: #0B0813; " +
-            "-fx-background-color: #0B0813; " +
-            "-fx-control-inner-background: #140F20; " +
-            "-fx-control-inner-background-alt: #171125; " +
+            "-fx-base: #140D07; " +
+            "-fx-background: #140D07; " +
+            "-fx-background-color: #140D07; " +
+            "-fx-control-inner-background: #1E130B; " +
+            "-fx-control-inner-background-alt: #26180E; " +
             "-fx-focus-color: #C5A059; " +
-            "-fx-faint-focus-color: rgba(197, 160, 89, 0.2); " +
+            "-fx-faint-focus-color: rgba(197, 160, 89, 0.20); " +
             "-fx-accent: #C5A059; " +
-            "-fx-selection-bar: #381024; " +
+            "-fx-selection-bar: #5C3A21; " +
             "-fx-text-base-color: #FAF7F2; " +
-            "-fx-font-family: 'Segoe UI', 'Inter', 'System', sans-serif;"
+            "-fx-font-family: 'Georgia', 'Garamond', 'Baskerville', serif;"
         );
     }
 
     public static void styleLoginTextField(TextField field) {
         String baseStyle =
-            "-fx-background-color: rgba(20, 13, 28, 0.82); " +
-            "-fx-text-fill: #FAF7F2; " +
-            "-fx-prompt-text-fill: #9E9385; " +
-            "-fx-highlight-fill: #C5A059; " +
-            "-fx-highlight-text-fill: #1A1024; " +
+            "-fx-background-color: rgba(24, 15, 10, 0.72); " +
+            "-fx-text-fill: #FFFDF8; " +
+            "-fx-prompt-text-fill: #9E8E7A; " +
+            "-fx-highlight-fill: #B88E3E; " +
+            "-fx-highlight-text-fill: #1A1009; " +
             "-fx-border-color: rgba(197, 160, 89, 0.38); " +
-            "-fx-border-radius: 8px; " +
-            "-fx-background-radius: 8px; " +
+            "-fx-border-radius: 5px; " +
+            "-fx-background-radius: 5px; " +
             "-fx-border-width: 1px; " +
-            "-fx-font-size: 13px;";
+            "-fx-font-family: 'Segoe UI', 'Georgia', sans-serif; " +
+            "-fx-font-size: 13.5px; " +
+            "-fx-padding: 0 14px 0 14px;";
         field.setStyle(baseStyle);
 
         field.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 field.setStyle(
-                    "-fx-background-color: rgba(28, 18, 38, 0.92); " +
-                    "-fx-text-fill: #FAF7F2; " +
-                    "-fx-prompt-text-fill: #9E9385; " +
-                    "-fx-highlight-fill: #C5A059; " +
-                    "-fx-highlight-text-fill: #1A1024; " +
+                    "-fx-background-color: rgba(32, 20, 13, 0.90); " +
+                    "-fx-text-fill: #FFFDF8; " +
+                    "-fx-prompt-text-fill: #9E8E7A; " +
+                    "-fx-highlight-fill: #B88E3E; " +
+                    "-fx-highlight-text-fill: #1A1009; " +
                     "-fx-border-color: #D4AF37; " +
-                    "-fx-border-radius: 8px; " +
-                    "-fx-background-radius: 8px; " +
+                    "-fx-border-radius: 5px; " +
+                    "-fx-background-radius: 5px; " +
                     "-fx-border-width: 1.5px; " +
-                    "-fx-font-size: 13px;"
+                    "-fx-font-family: 'Segoe UI', 'Georgia', sans-serif; " +
+                    "-fx-font-size: 13.5px; " +
+                    "-fx-padding: 0 14px 0 14px;"
                 );
             } else {
                 field.setStyle(baseStyle);
+            }
+        });
+
+        field.hoverProperty().addListener((obs, oldVal, isHover) -> {
+            if (!field.isFocused()) {
+                if (isHover) {
+                    field.setStyle(
+                        "-fx-background-color: rgba(28, 17, 11, 0.82); " +
+                        "-fx-text-fill: #FFFDF8; " +
+                        "-fx-prompt-text-fill: #9E8E7A; " +
+                        "-fx-highlight-fill: #B88E3E; " +
+                        "-fx-highlight-text-fill: #1A1009; " +
+                        "-fx-border-color: rgba(212, 175, 55, 0.65); " +
+                        "-fx-border-radius: 5px; " +
+                        "-fx-background-radius: 5px; " +
+                        "-fx-border-width: 1px; " +
+                        "-fx-font-family: 'Segoe UI', 'Georgia', sans-serif; " +
+                        "-fx-font-size: 13.5px; " +
+                        "-fx-padding: 0 14px 0 14px;"
+                    );
+                } else {
+                    field.setStyle(baseStyle);
+                }
             }
         });
     }
 
     public static void styleLoginPasswordField(PasswordField field) {
         String baseStyle =
-            "-fx-background-color: rgba(20, 13, 28, 0.82); " +
-            "-fx-text-fill: #FAF7F2; " +
-            "-fx-prompt-text-fill: #9E9385; " +
-            "-fx-highlight-fill: #C5A059; " +
-            "-fx-highlight-text-fill: #1A1024; " +
+            "-fx-background-color: rgba(24, 15, 10, 0.72); " +
+            "-fx-text-fill: #FFFDF8; " +
+            "-fx-prompt-text-fill: #9E8E7A; " +
+            "-fx-highlight-fill: #B88E3E; " +
+            "-fx-highlight-text-fill: #1A1009; " +
             "-fx-border-color: rgba(197, 160, 89, 0.38); " +
-            "-fx-border-radius: 8px; " +
-            "-fx-background-radius: 8px; " +
+            "-fx-border-radius: 5px; " +
+            "-fx-background-radius: 5px; " +
             "-fx-border-width: 1px; " +
-            "-fx-font-size: 13px;";
+            "-fx-font-family: 'Segoe UI', 'Georgia', sans-serif; " +
+            "-fx-font-size: 13.5px; " +
+            "-fx-padding: 0 14px 0 14px;";
         field.setStyle(baseStyle);
 
         field.focusedProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal) {
                 field.setStyle(
-                    "-fx-background-color: rgba(28, 18, 38, 0.92); " +
-                    "-fx-text-fill: #FAF7F2; " +
-                    "-fx-prompt-text-fill: #9E9385; " +
-                    "-fx-highlight-fill: #C5A059; " +
-                    "-fx-highlight-text-fill: #1A1024; " +
+                    "-fx-background-color: rgba(32, 20, 13, 0.90); " +
+                    "-fx-text-fill: #FFFDF8; " +
+                    "-fx-prompt-text-fill: #9E8E7A; " +
+                    "-fx-highlight-fill: #B88E3E; " +
+                    "-fx-highlight-text-fill: #1A1009; " +
                     "-fx-border-color: #D4AF37; " +
-                    "-fx-border-radius: 8px; " +
-                    "-fx-background-radius: 8px; " +
+                    "-fx-border-radius: 5px; " +
+                    "-fx-background-radius: 5px; " +
                     "-fx-border-width: 1.5px; " +
-                    "-fx-font-size: 13px;"
+                    "-fx-font-family: 'Segoe UI', 'Georgia', sans-serif; " +
+                    "-fx-font-size: 13.5px; " +
+                    "-fx-padding: 0 14px 0 14px;"
                 );
             } else {
                 field.setStyle(baseStyle);
             }
         });
+
+        field.hoverProperty().addListener((obs, oldVal, isHover) -> {
+            if (!field.isFocused()) {
+                if (isHover) {
+                    field.setStyle(
+                        "-fx-background-color: rgba(28, 17, 11, 0.82); " +
+                        "-fx-text-fill: #FFFDF8; " +
+                        "-fx-prompt-text-fill: #9E8E7A; " +
+                        "-fx-highlight-fill: #B88E3E; " +
+                        "-fx-highlight-text-fill: #1A1009; " +
+                        "-fx-border-color: rgba(212, 175, 55, 0.65); " +
+                        "-fx-border-radius: 5px; " +
+                        "-fx-background-radius: 5px; " +
+                        "-fx-border-width: 1px; " +
+                        "-fx-font-family: 'Segoe UI', 'Georgia', sans-serif; " +
+                        "-fx-font-size: 13.5px; " +
+                        "-fx-padding: 0 14px 0 14px;"
+                    );
+                } else {
+                    field.setStyle(baseStyle);
+                }
+            }
+        });
     }
 
     public static void styleLoginButton(Button btn) {
-        btn.setFont(Font.font("System", FontWeight.BOLD, 13));
+        btn.setFont(Font.font("Georgia", FontWeight.BOLD, 13));
         btn.setTextFill(Color.web("#FFFDF8"));
         btn.setCursor(javafx.scene.Cursor.HAND);
 
         String normalStyle =
-            "-fx-background-color: linear-gradient(to right, #381024, #4A162F); " +
+            "-fx-background-color: linear-gradient(to bottom, #8C6635, #684820); " +
             "-fx-text-fill: #FFFDF8; " +
-            "-fx-background-radius: 8px; " +
-            "-fx-border-color: rgba(212, 175, 55, 0.65); " +
-            "-fx-border-radius: 8px; " +
+            "-fx-background-radius: 5px; " +
+            "-fx-border-color: rgba(243, 229, 171, 0.75); " +
+            "-fx-border-radius: 5px; " +
             "-fx-border-width: 1.2px; " +
+            "-fx-font-family: 'Georgia', serif; " +
             "-fx-font-size: 13px; " +
-            "-fx-font-weight: bold;";
+            "-fx-font-weight: bold; " +
+            "-fx-letter-spacing: 1.5px;";
 
         String hoverStyle =
-            "-fx-background-color: linear-gradient(to right, #4D1832, #611F3E); " +
+            "-fx-background-color: linear-gradient(to bottom, #A27740, #7D5728); " +
             "-fx-text-fill: #FFFFFF; " +
-            "-fx-background-radius: 8px; " +
-            "-fx-border-color: #F3E5AB; " +
-            "-fx-border-radius: 8px; " +
+            "-fx-background-radius: 5px; " +
+            "-fx-border-color: #F8ECC2; " +
+            "-fx-border-radius: 5px; " +
             "-fx-border-width: 1.2px; " +
+            "-fx-font-family: 'Georgia', serif; " +
             "-fx-font-size: 13px; " +
-            "-fx-font-weight: bold;";
+            "-fx-font-weight: bold; " +
+            "-fx-letter-spacing: 1.5px;";
 
         String pressedStyle =
-            "-fx-background-color: #270B19; " +
+            "-fx-background-color: #553916; " +
             "-fx-text-fill: #E2D9CC; " +
-            "-fx-background-radius: 8px; " +
+            "-fx-background-radius: 5px; " +
             "-fx-border-color: #C5A059; " +
-            "-fx-border-radius: 8px; " +
+            "-fx-border-radius: 5px; " +
             "-fx-border-width: 1.2px; " +
+            "-fx-font-family: 'Georgia', serif; " +
             "-fx-font-size: 13px; " +
-            "-fx-font-weight: bold;";
+            "-fx-font-weight: bold; " +
+            "-fx-letter-spacing: 1.5px;";
 
         btn.setStyle(normalStyle);
 
